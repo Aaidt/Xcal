@@ -3,9 +3,10 @@ import jwt from "jsonwebtoken"
 import { prismaClient } from "@repo/db/client"
 import bcrypt from "bcrypt"
 import { z } from "zod"
+import { JWT_SECRET } from "@repo/backend-common/config"
 import { CreateUserSchema, LoginSchema } from './types'
 
-const authRouter = Router();
+const authRouter: Router = Router();
 
 authRouter.post("/signup", async function (req: Request, res: Response) {
     const parsedData = CreateUserSchema.safeParse(req.body);
@@ -20,6 +21,7 @@ authRouter.post("/signup", async function (req: Request, res: Response) {
     try {
         await prismaClient.user.create({
             data: {
+                name: parsedData.data.name,
                 username: parsedData.data.username,
                 password: hashedPassword
             }
@@ -44,25 +46,37 @@ authRouter.post("/login", async function (req: Request, res: Response) {
         return
     }
 
-    try{
+    try {
         const foundUser = await prismaClient.user.findFirst({
             where: {
                 username: parsedData.data.username
             }
         })
-        if(!foundUser){ 
-            res.status(404).json({ message: "User not found."})
+        if (!foundUser) {
+            res.status(404).json({ message: "User not found." })
             return
         }
 
         const AuthorisedUser = bcrypt.compare(parsedData.data.password, foundUser.password)
-        if(!AuthorisedUser){
+        if (!AuthorisedUser) {
             res.status(403).json({ message: "Incorrect password.❌❌" })
         }
 
-        res.status(200).json({ message: "Successfully logged in!!!✅✅" })
-        
-    }catch(e){
+        if (!JWT_SECRET) {
+            console.log("No JWT_SECRET provided.")
+            res.status(403).json({ message: "No JWT_SECRET provided." })
+            return 
+        }
+        const token = jwt.sign({
+            id: foundUser?.id
+        }, JWT_SECRET)
+
+        res.status(200).json({ 
+            token: token,
+            message: "Successfully logged in!!!✅✅"
+         })
+
+    } catch (e) {
         console.log("Incorrect credentials provided.")
         res.status(403).json({
             message: "Incorrect credentials provided.❌❌"
@@ -70,3 +84,7 @@ authRouter.post("/login", async function (req: Request, res: Response) {
     }
 
 })
+
+
+
+export default authRouter
