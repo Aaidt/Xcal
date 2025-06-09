@@ -1,5 +1,5 @@
 {
-  "name": "Xcal_new",
+  "name": "Xcal",
   "private": true,
   "scripts": {
     "build": "turbo run build",

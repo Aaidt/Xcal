@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String?
+  photo     String?
+  username  String    @unique
+  password  String
+  rooms     Room[]    @relation("RoomUsers")
+  adminOf   Room[]    @relation("AdminUser")
+  shapes    Shape[]
+  messages  Message[]
+  createdAt DateTime  @default(now())
+}
+
+model Shape {
+  id        Int      @id @default(autoincrement())
+  shape     Json
+  roomId    Int
+  room      Room     @relation(fields: [roomId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Room {
+  id         Int       @id @default(autoincrement())
+  slug       String    @unique
+  created_at DateTime  @default(now())
+  adminId    String
+  admin      User      @relation("AdminUser", fields: [adminId], references: [id])
+  shapes     Shape[]
+  users      User[]    @relation("RoomUsers")
+  messages   Message[]
+  createdAt  DateTime  @default(now())
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  message   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  roomId    Int
+  room      Room     @relation(fields: [roomId], references: [id])
+  createdAt DateTime @default(now())
+}
