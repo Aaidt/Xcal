@@ -5,7 +5,7 @@ import { RoomSchema } from "./types"
 const roomRouter: Router = Router();
 
 
-roomRouter.post("/room", async function (req: Request, res: Response) {
+roomRouter.post("/", async function (req: Request, res: Response) {
     const parsedData = RoomSchema.safeParse(req.body);
     if (!parsedData.success) {
         console.log("Incorrect credentials provided")
@@ -79,7 +79,7 @@ roomRouter.get("/shapes/:roomId", async function (req: Request, res: Response) {
 
 })
 
-roomRouter.get("/room/:slug", async function (req: Request, res: Response) {
+roomRouter.get("/:slug", async function (req: Request, res: Response) {
     const slug = req.params.slug;
 
     if (!slug) {

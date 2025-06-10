@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { JWT_SECRET } from "@repo/backend-common/config"
 import jwt from "jsonwebtoken";
 
@@ -14,6 +14,7 @@ export async function Middleware(req: Request, res: Response, next: NextFunction
     const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload
 
     if(decoded){
+        console.log(decoded.userId);
         req.userId = decoded.userId
         next()
     }else{

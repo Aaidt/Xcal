@@ -19,7 +19,7 @@ authRouter.post("/signup", async function (req: Request, res: Response) {
     const hashedPassword = await bcrypt.hash(parsedData.data.password, 5);
 
     try {
-        await prismaClient.user.create({
+        const user = await prismaClient.user.create({
             data: {
                 name: parsedData.data.name,
                 username: parsedData.data.username,
@@ -27,7 +27,10 @@ authRouter.post("/signup", async function (req: Request, res: Response) {
             }
         })
 
-        res.status(201).json({ message: "Signed up successfully!!! ✅✅" })
+        res.status(201).json({ 
+            message: "Signed up successfully!!! ✅✅",
+            userId: user.id
+        })
     } catch (e) {
         console.log("Username already exists.")
         res.status(403).json({
@@ -68,7 +71,7 @@ authRouter.post("/login", async function (req: Request, res: Response) {
             return 
         }
         const token = jwt.sign({
-            id: foundUser?.id
+            userId: foundUser?.id
         }, JWT_SECRET)
 
         res.status(200).json({ 

@@ -1,5 +1,4 @@
 import express from "express"
-import { prismaClient } from "@repo/db/client"
 import cors from "cors"
 import authRouter from "./auth"
 import RoomRouter from "./room"
@@ -14,7 +13,7 @@ app.use(express.json())
 app.use(cors())
 
 app.use("/api/auth", authRouter)
-app.use("/api/rom", Middleware, RoomRouter)
+app.use("/api/room", Middleware, RoomRouter)
 
 
 app.listen(3000, () => {
