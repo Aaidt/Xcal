@@ -66,7 +66,7 @@ export function AuthPage({ isSignin }: {
                                 button.click();
                             }
                         }
-                    }}
+                    }}  
                     id="password" type="password" ref={passwordRef}
                     className="border font-normal w-full border-black/40 px-2 py-1 mb-2 rounded-md"
                     placeholder="********" />
