@@ -16,10 +16,10 @@ export function AuthPage({ isSignin }: {
     const passwordRef = useRef<HTMLInputElement>(null);
     const nameRef = useRef<HTMLInputElement>(null);
 
-    function routeToPage(){
-        if(isSignin){
+    function routeToPage() {
+        if (isSignin) {
             router.push("/room")
-        }else{
+        } else {
             router.push("/signin")
         }
     }
@@ -34,16 +34,42 @@ export function AuthPage({ isSignin }: {
             </div>
             {isSignin ? null : (
                 <label htmlFor="name" className="font-semibold "> Name:
-                    <input id="name" ref={nameRef} type="text" className="font-normal rounded-md border border-black/40 px-1 py-1 w-full mb-2"
+                    <input
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                usernameRef.current?.focus();
+                            }
+                        }}
+                        id="name" ref={nameRef} type="text"
+                        className="font-normal rounded-md border border-black/40 px-1 py-1 w-full mb-2"
                         placeholder="John Doe" />
                 </label>
             )}
             <label htmlFor="username" className="font-semibold "> Username:
-                <input id="username" ref={usernameRef} className="border font-normal w-full border-black/40 px-2 py-1 rounded-md mb-2" type="text" placeholder="exapmle@gmail.com" />
+                <input
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            passwordRef.current?.focus();
+                        }
+                    }}
+                    id="username" ref={usernameRef}
+                    className="border font-normal w-full border-black/40 px-2 py-1 rounded-md mb-2"
+                    type="text" placeholder="exapmle@gmail.com" />
             </label>
 
             <label htmlFor="password" className="font-semibold "> Password:
-                <input id="password" type="password" ref={passwordRef} className="border font-normal w-full border-black/40 px-2 py-1 mb-2 rounded-md" placeholder="********" />
+                <input
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            const button = e.currentTarget.closest('div')?.querySelector('button');
+                            if (button instanceof HTMLButtonElement) {
+                                button.click();
+                            }
+                        }
+                    }}
+                    id="password" type="password" ref={passwordRef}
+                    className="border font-normal w-full border-black/40 px-2 py-1 mb-2 rounded-md"
+                    placeholder="********" />
             </label>
 
             <div className="pt-3 flex justify-center items-center">
