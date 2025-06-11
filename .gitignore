@@ -37,4 +37,4 @@ yarn-error.log*
 .DS_Store
 *.pem
 
-packages/backend-common/src/config
+packages/backend-common/src/config.ts
