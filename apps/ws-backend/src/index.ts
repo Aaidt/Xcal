@@ -32,7 +32,7 @@ wss.on("connection", function (ws, request) {
     console.log('Ws connection established!!!');
     let userId: string | null = null
 
-    wss.on("message", function (data) {
+    wss.on("message", async function (data) {
         const parsedData = JSON.parse(data.toString())
 
         if (parsedData.type === "auth") {
@@ -85,6 +85,15 @@ wss.on("connection", function (ws, request) {
             }
 
             if (parsedData.type === "chat") {
+
+                await prismaClient.shape.create({
+                    data: {
+                        shape: parsedData.shape,
+                        roomId: parsedData.roomId,
+                        userId: parsedData.userId
+                    }
+                })
+
                 users
                     .filter(u => u.room.includes(parsedData.roomId))
                     .forEach(u =>
