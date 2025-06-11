@@ -41,7 +41,7 @@ authRouter.post("/signup", async function (req: Request, res: Response) {
 })
 
 
-authRouter.post("/login", async function (req: Request, res: Response) {
+authRouter.post("/signin", async function (req: Request, res: Response) {
     const parsedData = LoginSchema.safeParse(req.body);
     if (!parsedData.success) {
         console.log("Incorrect credentials provided")

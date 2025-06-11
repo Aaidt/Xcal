@@ -12,18 +12,19 @@ export function AuthPage({ isSignin }: {
 
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
+    const nameRef = useRef<HTMLInputElement>(null);
 
-    return <div className="flex justify-center items-center w-screen h-screen bg-black/95 text-black">
+    return <div className="flex justify-center items-center min-w-screen min-h-screen bg-black/95 text-black overflow-hidden">
         <div className="p-6 m-2 w-88 bg-white/90 rounded-lg">
             <div className="text-4xl font-bold pb-2 flex justify-center">
                 {isSignin ? "Login" : "Sign-up"}
             </div>
             <div className="text-md text-gray-600 mb-3 text-center">
                 {isSignin ? "Enter your information to create an account" : "Enter your credentials to access the account"}
-            </div>
+            </div> 
             {isSignin ? null : (
                 <label htmlFor="name" className="font-semibold "> Name:
-                    <input id="name" type="text" className="font-normal rounded-md border border-black/40 px-1 py-1 w-full mb-2"
+                    <input id="name" ref={nameRef} type="text" className="font-normal rounded-md border border-black/40 px-1 py-1 w-full mb-2"
                         placeholder="John Doe" />
                 </label>
             )}
@@ -40,16 +41,24 @@ export function AuthPage({ isSignin }: {
                     onClick={async () => {
                         const username = usernameRef.current?.value
                         const password = passwordRef.current?.value
+                        const name = nameRef.current?.value
                         if (!username || !password) {
                             alert("Both fields are required");
                             return;
                         }
                         try {
-                            const response = await axios.post(`${BACKEND_URL}/${isSignin ? "signin" : "signup"}`,
-                                {
-                                    username,
-                                    password
-                                }
+                            const response = await axios.post(`${BACKEND_URL}/api/auth/${isSignin ? "signin" : "signup"}`,
+                                isSignin ?
+                                    {
+                                        username,
+                                        password
+                                    }
+                                    :
+                                    {
+                                        name,
+                                        username,
+                                        password
+                                    }
                             )
                             alert(response?.data.message || "Success")
                         } catch (err) {
@@ -59,7 +68,7 @@ export function AuthPage({ isSignin }: {
                     }}
                 >{isSignin ? "Login" : "Sign-up"}</button>
             </div>
-            <div className="text-sm text-gray-500 flex justify-center pt-1">
+            <div className="text-sm text-gray-500 flex justify-center pt-2">
                 {isSignin ? "If you don't have an account..." : "Do you already have an account?"}
                 {isSignin ? (
                     <Link href="/signup" className="text-sm text-black hover:underline hover:underline-offset-2 pl-2 hover:-translate-y-1 duration-300 transition-all

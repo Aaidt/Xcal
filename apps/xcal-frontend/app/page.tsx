@@ -103,12 +103,12 @@ export default function Home() {
   ]
 
   return (
-    <div className="bg-black text-white min-w-screen min-h-screen min-h-full">
+    <div className="bg-black text-white max-w-screen min-h-screen overflow-hidden">
 
       <div className="top-0 left-0 border-y border-white/20 bg-black w-screen h-20">
         <div className="flex justify-between items-center h-full px-6">
 
-          <div className="text-3xl font-bold flex items-center cursor-pointer">Excal</div>
+          <div className="text-4xl font-bold flex items-center cursor-pointer">Xcal</div>
 
           <div className="flex items-center gap-6">
             <Link href="#features">
