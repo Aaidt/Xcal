@@ -3,16 +3,26 @@
 import Link from "next/link"
 import { useRef } from "react"
 import axios from "axios"
-// import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 export function AuthPage({ isSignin }: {
     isSignin: boolean
 }) {
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
+    const router = useRouter();
+
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const nameRef = useRef<HTMLInputElement>(null);
+
+    function routeToPage(){
+        if(isSignin){
+            router.push("/room")
+        }else{
+            router.push("/signin")
+        }
+    }
 
     return <div className="flex justify-center items-center min-w-screen min-h-screen bg-black/95 text-black overflow-hidden">
         <div className="p-6 m-2 w-88 bg-white/90 rounded-lg">
@@ -21,7 +31,7 @@ export function AuthPage({ isSignin }: {
             </div>
             <div className="text-md text-gray-600 mb-3 text-center">
                 {isSignin ? "Enter your information to create an account" : "Enter your credentials to access the account"}
-            </div> 
+            </div>
             {isSignin ? null : (
                 <label htmlFor="name" className="font-semibold "> Name:
                     <input id="name" ref={nameRef} type="text" className="font-normal rounded-md border border-black/40 px-1 py-1 w-full mb-2"
@@ -61,6 +71,7 @@ export function AuthPage({ isSignin }: {
                                     }
                             )
                             alert(response?.data.message || "Success")
+                            routeToPage()
                         } catch (err) {
                             console.log(err);
                             alert("Error during request");
