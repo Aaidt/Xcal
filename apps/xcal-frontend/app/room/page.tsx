@@ -23,7 +23,8 @@ export default function Room() {
             return
         }
 
-        const token = localStorage.getItem(`Authorization`);
+        const tokenString = localStorage.getItem(`Authorization`);
+        const token = tokenString?.split(" ")[1]
         if (!token) {
             toast.error('You need to login first!!!');
             router.push("/signin");

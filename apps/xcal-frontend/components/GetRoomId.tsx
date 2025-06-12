@@ -27,7 +27,8 @@ export default function GetRoomId({ slug }: { slug: string }) {
                     setLoading(false)
                     return;
                 }
-                const token = localStorage.getItem('Authorization');
+                const tokenString = localStorage.getItem('Authorization');
+                const token = tokenString?.split(" ")[1]
                 if (!token) {
                     toast.error('Authorization token not found');
                     setLoading(false)
