@@ -5,7 +5,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 const tokenString = localStorage.getItem("Authorzation");
 const token = tokenString?.split(" ")[1]
 
-export async function getExistingShapes(roomId: string){
+export async function getExistingShapes(roomId: number){
     let message;
     try{
         const response = await axios.get(`${BACKEND_URL}/shapes/${roomId}`, {
