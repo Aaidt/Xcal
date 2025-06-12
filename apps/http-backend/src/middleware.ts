@@ -5,7 +5,13 @@ import jwt from "jsonwebtoken";
 export async function Middleware(req: Request, res: Response, next: NextFunction) {
 
     const authHeader = req.headers["authorization"];
-    const token = typeof authHeader === "string" ? authHeader : ""
+    const parsedToken = authHeader?.split(" ")[1];
+    const token = typeof parsedToken === "string" ? parsedToken : ""
+
+    if(!token){
+        console.log('No token provided.')
+        return
+    }
 
     if(!JWT_SECRET){
         console.log('No JWT_SECRET provided.')
