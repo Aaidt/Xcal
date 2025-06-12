@@ -45,13 +45,16 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
                         password
                     }
             )
-            alert(response?.data.message || "Success")
+            toast.success(response?.data.message || "Success")
             routeToPage(response.data)
         }
-        catch (err: any) {
-            const errMessage = err.response?.data?.message || "An error occured during the request."
-            console.log('Auth request failed.', + err);
-            alert(errMessage);
+        catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                const errMessage = err.response?.data?.message || "An error occured during the request."
+                console.log('Auth request failed.', + err);
+                toast.error(errMessage);
+            }
+
         } finally {
             setLoading(false)
         }
@@ -61,7 +64,7 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
         if (response.token) {
             localStorage.setItem('Authorization', `Bearer ${response.token}`)
             router.push("/room")
-        }else {
+        } else {
             router.push("/signin");
         }
     }

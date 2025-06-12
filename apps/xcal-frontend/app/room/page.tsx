@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { toast } from "react-toastify"
 import axios from "axios";
 
 interface axiosResponse {
@@ -18,13 +19,13 @@ export default function Room() {
 
     async function createRoom(slug: string) {
         if (!slug.trim()) {
-            alert("Room name cannot be empty.")
+            toast.error("Room name cannot be empty.")
             return
         }
 
         const token = localStorage.getItem(`Authorization`);
         if (!token) {
-            alert('You need to login first!!!');
+            toast.error('You need to login first!!!');
             router.push("/signin");
             return
         }
@@ -38,12 +39,14 @@ export default function Room() {
                 }
             });
 
-            alert(res.data.message);
+            toast(res.data.message);
             console.log(res.data.roomId);
-
-        } catch (e) {
-            console.log('Create room request failed.' + e);
-            alert('Failed to create room. Please try again.');
+            router.push(`/canvas/${slug}`)
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                console.log('Create room request failed.' + err?.response?.data?.message);
+            }
+            toast.error('Failed to create room. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -61,7 +64,6 @@ export default function Room() {
                         onKeyDown={async (e) => {
                             if (e.key === "Enter" && !loading) {
                                 await createRoom(slug)
-                                router.push(`/canvas/${slug}`)
                             }
                         }}
                         className="bg-white rounded-md text-black px-2 py-1" placeholder="Enter room name..."
@@ -70,7 +72,6 @@ export default function Room() {
                         disabled={loading}
                         onClick={async () => {
                             await createRoom(slug)
-                            router.push(`/canvas/${slug}`)
                         }}
                         className="rounded-md px-2 py-1 bg-black hover:bg-white/10 duration-200 transition-all">
                         {loading ? "Creating room..." : "Enter"}

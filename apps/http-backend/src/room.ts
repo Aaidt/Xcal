@@ -25,7 +25,7 @@ roomRouter.post("/", async function (req: Request, res: Response) {
     try {
         const room = await prismaClient.room.create({
             data: {
-                slug: parsedData.data.name,
+                slug: parsedData.data.slug,
                 admin: {
                     connect: {
                         id: userId
