@@ -43,7 +43,7 @@ wss.on("connection", function (ws, request) {
                     console.log('Incorrect/missing token.')
                     ws.close()
                     return
-                } else {
+                } else {    
                     users.push({
                         userId,
                         ws,

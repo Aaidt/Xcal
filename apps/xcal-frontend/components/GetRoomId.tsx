@@ -59,9 +59,17 @@ export default function GetRoomId({ slug }: { slug: string }) {
         fetchRoomId()
     }, [slug, router]);
 
+    if(loading){
+        return (
+            <div className="flex text-lg text-white justify-center items-center bg-black/95 min-h-screen">
+                Loading....
+            </div>    
+        )
+    }
+
     if(!roomId){
         return (
-            <div className="flex justify-center items-center bg-black/95 min-h-screen">
+            <div className="flex text-lg text-white justify-center items-center bg-black/95 min-h-screen">
                 No room found with that name.
             </div>    
         )
