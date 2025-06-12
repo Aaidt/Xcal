@@ -27,9 +27,13 @@ authRouter.post("/signup", async function (req: Request, res: Response) {
             }
         })
 
+        const token = jwt.sign({
+            userId: user.id
+        }, JWT_SECRET);
+
         res.status(201).json({ 
             message: "Signed up successfully!!! ✅✅",
-            userId: user.id
+            token: token
         })
     } catch (e) {
         console.log("Username already exists.")

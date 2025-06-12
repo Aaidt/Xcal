@@ -1,4 +1,4 @@
-export default function Canvas({
+export default async function Canvas({
     params
 }: {
     params: {
@@ -6,5 +6,5 @@ export default function Canvas({
     }
 }){
     const slug = (await params)
-    
+
 }

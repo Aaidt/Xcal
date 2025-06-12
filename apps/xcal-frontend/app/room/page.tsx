@@ -4,14 +4,20 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import axios from "axios";
 
+interface axiosResponse {
+    message: string,
+    roomId: number
+}
+
 export default function Room() {
     const [slug, setSlug] = useState<string>("")
+    const [loading, setLoading] = useState<boolean>(false)
     const router = useRouter()
 
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
     async function createRoom(slug: string) {
-        if(!slug.trim()){
+        if (!slug.trim()) {
             alert("Room name cannot be empty.")
             return
         }
@@ -22,9 +28,9 @@ export default function Room() {
             router.push("/signin");
             return
         }
-
+        setLoading(true);
         try {
-            const res = await axios.post(`${BACKEND_URL}/api/room`, {
+            const res = await axios.post<axiosResponse>(`${BACKEND_URL}/api/room`, {
                 slug
             }, {
                 headers: {
@@ -38,6 +44,8 @@ export default function Room() {
         } catch (e) {
             console.log('Create room request failed.' + e);
             alert('Failed to create room. Please try again.');
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -51,19 +59,21 @@ export default function Room() {
                         value={slug}
                         onChange={(e) => setSlug(e.target.value)}
                         onKeyDown={async (e) => {
-                            if (e.key === "Enter") {
+                            if (e.key === "Enter" && !loading) {
                                 await createRoom(slug)
                                 router.push(`/canvas/${slug}`)
                             }
                         }}
-                        className="bg-white rounded-md text-black px-2 py-1" placeholder="Enter room name..." />
+                        className="bg-white rounded-md text-black px-2 py-1" placeholder="Enter room name..."
+                        disabled={loading} />
                     <button
+                        disabled={loading}
                         onClick={async () => {
                             await createRoom(slug)
                             router.push(`/canvas/${slug}`)
                         }}
                         className="rounded-md px-2 py-1 bg-black hover:bg-white/10 duration-200 transition-all">
-                        Enter
+                        {loading ? "Creating room..." : "Enter"}
                     </button>
                 </div>
             </div>
