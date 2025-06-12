@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useRef, useState } from "react"
 import axios from "axios"
+import { toast } from "react-toastify";
 import { useRouter } from "next/navigation"
 
 interface AuthResponse {
@@ -26,7 +27,7 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
         const password = passwordRef.current?.value
         const name = nameRef.current?.value
         if (!username || !password || (!isSignin && !name)) {
-            alert("All fields are required");
+            toast.error("All fields are required");
             return;
         }
         setLoading(true)

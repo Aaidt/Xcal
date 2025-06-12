@@ -105,7 +105,7 @@ export default function Home() {
   return (
     <div className="bg-black text-white max-w-screen min-h-screen overflow-hidden">
 
-      <div className="top-0 left-0 border-y border-white/20 bg-black w-screen h-20">
+      <div className="fixed z-50 top-0 left-0 border-y border-white/20 bg-black backdrop-filter backdrop-blur-md bg-transparent w-screen h-20">
         <div className="flex justify-between items-center h-full px-6">
 
           <div className="text-4xl font-bold flex items-center cursor-pointer">Xcal</div>
@@ -135,7 +135,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="flex justify-between p-5 pt-12 pl-25 pr-25 pb-20 border-b border-white/30">
+      <div className="flex justify-between p-5 pt-32 pl-25 pr-25 pb-20 border-b border-white/30">
 
         <div className="flex flex-col pt-5">
           <div className="tracking-wide font-bold text-6xl pb-5">
