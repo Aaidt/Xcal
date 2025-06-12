@@ -46,6 +46,39 @@ roomRouter.post("/", async function (req: Request, res: Response) {
 
 })
 
+    
+roomRouter.get("/:slug", async function (req: Request, res: Response) {
+    const slug = req.params.slug;
+
+    if (!slug) {
+        res.status(403).json({ message: "Name of the room not provided." })
+        return
+    }
+
+    try {
+        const room = await prismaClient.room.findFirst({
+            where: {
+                slug: slug
+            }
+        });
+
+        if (!room) {
+            res.status(404).json({ message: "Room could not be found." })
+            return
+        }
+
+        res.status(200).json({
+            roomId: room.id
+        })
+
+    } catch (e) {
+        res.status(403).json({
+            message: "Room with that name could not be found."
+        })
+    }
+})
+
+
 roomRouter.get("/shapes/:roomId", async function (req: Request, res: Response) {
     const roomId = Number(req.params.roomId);
 
@@ -79,36 +112,7 @@ roomRouter.get("/shapes/:roomId", async function (req: Request, res: Response) {
 
 })
 
-roomRouter.get("/:slug", async function (req: Request, res: Response) {
-    const slug = req.params.slug;
 
-    if (!slug) {
-        res.status(403).json({ message: "Name of the room not provided." })
-        return
-    }
-
-    try {
-        const room = await prismaClient.room.findFirst({
-            where: {
-                slug: slug
-            }
-        });
-
-        if (!room) {
-            res.status(404).json({ message: "Room could not be found." })
-            return
-        }
-
-        res.status(200).json({
-            roomId: room.id
-        })
-
-    } catch (e) {
-        res.status(403).json({
-            message: "Room with that name could not be found."
-        })
-    }
-})
 
 
 export default roomRouter

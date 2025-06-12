@@ -42,7 +42,8 @@ export default function Room() {
             toast(res.data.message);
             console.log(res.data.roomId);
             router.push(`/canvas/${slug}`)
-        } catch (err: unknown) {
+        }
+        catch (err: unknown) {
             if (axios.isAxiosError(err)) {
                 console.log('Create room request failed.' + err?.response?.data?.message);
             }
