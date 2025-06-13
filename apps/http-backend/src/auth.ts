@@ -32,13 +32,13 @@ authRouter.post("/signup", async function (req: Request, res: Response) {
         }, JWT_SECRET);
 
         res.status(201).json({ 
-            message: "Signed up successfully!!! ✅✅",
+            message: "Signed up successfully!!!",
             token: token
         })
     } catch (e) {
         console.log("Username already exists.")
         res.status(403).json({
-            message: "Username already exists.❌❌"
+            message: "Username already exists."
         })
     }
 
@@ -66,7 +66,7 @@ authRouter.post("/signin", async function (req: Request, res: Response) {
 
         const AuthorisedUser = bcrypt.compare(parsedData.data.password, foundUser.password)
         if (!AuthorisedUser) {
-            res.status(403).json({ message: "Incorrect password.❌❌" })
+            res.status(403).json({ message: "Incorrect password." })
         }
 
         if (!JWT_SECRET) {
@@ -80,13 +80,13 @@ authRouter.post("/signin", async function (req: Request, res: Response) {
 
         res.status(200).json({ 
             token: token,
-            message: "Successfully logged in!!!✅✅"
+            message: "Successfully logged in!!!"
          })
 
     } catch (e) {
         console.log("Incorrect credentials provided.")
         res.status(403).json({
-            message: "Incorrect credentials provided.❌❌"
+            message: "Incorrect credentials provided."
         })
     }
 
