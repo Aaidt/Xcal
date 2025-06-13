@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Shape" ALTER COLUMN "shape" SET DATA TYPE TEXT;

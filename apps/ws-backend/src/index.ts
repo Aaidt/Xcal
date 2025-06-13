@@ -14,7 +14,12 @@ interface User {
 const users: User[] = []
 
 function getUserId(token: string): string | null {
-    const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload
+    const parsedToken = token.split(" ")[1]
+    if(typeof parsedToken !== "string"){
+        console.log('This is not a string: ' + parsedToken)
+        return null
+    }
+    const decoded = jwt.verify(parsedToken, JWT_SECRET) as jwt.JwtPayload
 
     try {
         if (!decoded || typeof decoded.userId !== "string") {
@@ -33,15 +38,22 @@ wss.on("connection", function (ws, request) {
     let userId: string | null = null
 
     wss.on("message", async function (data) {
-        const parsedData = JSON.parse(data.toString())
+        let parsedData;
+        if(typeof data !== "string"){
+            parsedData = JSON.parse(data.toString())
+        }else{
+            parsedData = JSON.parse(data);
+        }
+
 
         if (parsedData.type === "auth") {
 
             try {
                 userId = getUserId(parsedData.token);
+                console.log(userId);
                 if (userId === null) {
                     console.log('Incorrect/missing token.')
-                    ws.close()
+                    ws.close();
                     return
                 } else {    
                     users.push({
@@ -49,10 +61,13 @@ wss.on("connection", function (ws, request) {
                         ws,
                         room: []
                     })
+                    console.log('UserId pushed in arr.')
                 }
             } catch (e) {
                 console.log('❌ Invalid token. Closing the socket.' + e);
                 ws.close();
+            } finally {
+                console.log('success')
             }
 
         }
@@ -89,8 +104,8 @@ wss.on("connection", function (ws, request) {
                 await prismaClient.shape.create({
                     data: {
                         shape: parsedData.shape,
-                        roomId: parsedData.roomId,
-                        userId: parsedData.userId
+                        roomId: Number(parsedData.roomId),
+                        userId: userId
                     }
                 })
 

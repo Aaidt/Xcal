@@ -21,26 +21,29 @@ export default function RoomCanvas({ roomId }: { roomId: number }) {
         if (!WS_URL) {
             console.log('No websocket url provided.')
             setLoading(false);
-            return 
+            return
         }
         const ws = new WebSocket(`${WS_URL}`);
         setSocket(ws);
 
-        ws.onopen = async () => {
-            await ws.send(JSON.stringify({
+        ws.onopen = () => {
+            ws.send(JSON.stringify({
                 type: "auth",
                 token: token
             }));
 
-            ws.send(JSON.stringify({
-                type: "join-room",
-                roomId: roomId
-            }))
+            setTimeout(() => {
+                ws.send(JSON.stringify({
+                    type: "join-room",
+                    roomId: roomId
+                }))
+            }, 100);
+
         }
 
         ws.onerror = (e) => {
             toast.error('Falied to connec to the server.')
-            console.log('Ws error ' + e)
+            console.log('Ws error ' + JSON.stringify(e))
             setLoading(false);
         }
 
@@ -57,7 +60,7 @@ export default function RoomCanvas({ roomId }: { roomId: number }) {
 
     }, [roomId])
 
-    if(!socket || loading){
+    if (!socket || loading) {
         return <div className="bg-black/95 min-h-screen text-white text-lg flex justify-center items-center">
             Connecting to the server...
         </div>

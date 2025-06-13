@@ -108,6 +108,7 @@ roomRouter.get("/shapes/:roomId", async function (req: Request, res: Response) {
         res.status(403).json({
             message: "Could not find the desired room."
         })
+        console.log("Could not find the desired room.")
     }
 
 })

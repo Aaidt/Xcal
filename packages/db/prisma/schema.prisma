@@ -28,7 +28,7 @@ model User {
 
 model Shape {
   id        Int      @id @default(autoincrement())
-  shape     Json
+  shape     String
   roomId    Int
   room      Room     @relation(fields: [roomId], references: [id])
   userId    String

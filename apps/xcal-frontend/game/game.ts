@@ -41,6 +41,7 @@ export class Game {
         this.clicked = false
         this.socket = socket
         this.initMouseHandlers()
+        this.initHandlers()
         this.init()
     }
 
@@ -78,7 +79,7 @@ export class Game {
         this.ctx.fillStyle = "black"
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
 
-        this.existingShapes.map((shape) => {
+        this.existingShapes.map(shape => {
             if (shape.type === "rect") {
                 this.ctx.strokeStyle = "white"
                 this.ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
