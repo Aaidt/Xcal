@@ -109,16 +109,16 @@ wss.on("connection", function (ws) {
                     }
                 })
 
-                users
-                    .filter(u => u.room.includes(parsedData.roomId))
-                    .forEach(u =>
-                        ws.send(JSON.stringify({
+                users.forEach(user => {
+                    if(user.room.includes(parsedData.roomId)){
+                        user.ws.send(JSON.stringify({
                             type: "chat",
-                            message: parsedData.message,
+                            shape: parsedData.shape,
                             from: user?.userId,
                             roomId: parsedData.roomId
                         }))
-                    )
+                    }
+                })
             }
 
         }

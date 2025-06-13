@@ -65,9 +65,11 @@ export class Game {
     initHandlers() {
         this.socket.onmessage = (event) => {
             const message = JSON.parse(event.data);
+            console.log(message);
 
             if (message.type === "chat") {
-                const parsedShape = JSON.parse(message.message)
+                const parsedShape = JSON.parse(message.shape)
+                console.log(parsedShape);
                 this.existingShapes.push(parsedShape.shape);
                 this.clearCanvas();
             }
@@ -126,8 +128,8 @@ export class Game {
             shape = {
                 type: "circle",
                 radius: radius,
-                centerX: this.startX + radius,
-                centerY: this.startY + radius,
+                centerX: this.centerX,
+                centerY: this.centerY,
                 startAngle: 0,
                 endAngle: Math.PI * 2
             }
@@ -143,7 +145,6 @@ export class Game {
             }),
             roomId: this.roomId
         }))
-
     }
 
     mouseMoveHandler = (e: MouseEvent) => {
