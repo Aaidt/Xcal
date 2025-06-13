@@ -7,7 +7,7 @@ export default async function Canvas({
         slug: string
     }
 }) {
-    const { slug } = params
+    const { slug } = await params
 
     if(!slug){
         return <div>Invalid room name...</div>

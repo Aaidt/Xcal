@@ -30,8 +30,10 @@ export class Game {
     private selectedTool: Tool = "circle"
     private centerX = 0
     private centerY = 0
+    private token: string
 
-    constructor(canvas: HTMLCanvasElement, roomId: number, socket: WebSocket) {
+    constructor(canvas: HTMLCanvasElement, roomId: number, socket: WebSocket, token: string) {
+        this.token = token
         this.canvas = canvas
         this.ctx = canvas.getContext("2d")!;
         this.existingShapes = []
@@ -47,7 +49,7 @@ export class Game {
     }
 
     async init() {
-        this.existingShapes = await getExistingShapes(this.roomId)
+        this.existingShapes = await getExistingShapes(this.roomId, this.token)
         this.clearCanvas()
     }
 

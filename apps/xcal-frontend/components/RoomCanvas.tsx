@@ -7,8 +7,7 @@ import Canvas from "./Canvas"
 export default function RoomCanvas({ roomId }: { roomId: number }) {
     const [socket, setSocket] = useState<WebSocket | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
-    const tokenString = localStorage.getItem('Authorization');
-    const token = tokenString?.split(" ")[1]
+    const token = localStorage.getItem('Authorization');
     const WS_URL = process.env.NEXT_PUBLIC_WS_URL;
     const router = useRouter()
 

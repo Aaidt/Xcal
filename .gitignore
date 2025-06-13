@@ -38,3 +38,4 @@ yarn-error.log*
 *.pem
 
 packages/backend-common/src/config.ts
+.vscode/

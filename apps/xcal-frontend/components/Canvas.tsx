@@ -1,7 +1,10 @@
+"use client"
+
 import { useState, useEffect, useRef } from "react"
 import IconButton from "./IconButton"
 import { Pencil, Circle, RectangleHorizontal } from "lucide-react"
 import { Game } from "@/game/game"
+import { toast } from "react-toastify"
 
 
 export type Tool = "pencil" | "circle" | "rect"
@@ -18,14 +21,19 @@ export default function Canvas({
     const [selectedTool, setSelectedTool] = useState<Tool>("pencil")
     const [game, setGame] = useState<Game>();
 
+    const token = localStorage.getItem("Authorization");
 
     useEffect(() => {
         game?.setTool(selectedTool)
     }, [selectedTool, game])
 
     useEffect(() => {
+        if(!token){
+            toast.error('User not logged in.')
+            return 
+        }
         if (canvasRef.current) {
-            const g = new Game(canvasRef.current, roomId, socket);
+            const g = new Game(canvasRef.current, roomId, socket, token);
             setGame(g)
 
             return () => {
