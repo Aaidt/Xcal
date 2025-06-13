@@ -15,6 +15,12 @@ type Shapes = {
     radius: number,
     startAngle: number,
     endAngle: number
+} | {
+    type: "line",
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number,
 }
 
 export class Game {
@@ -31,6 +37,8 @@ export class Game {
     private centerX = 0
     private centerY = 0
     private token: string
+    private endX = 0
+    private endY = 0
 
     constructor(canvas: HTMLCanvasElement, roomId: number, socket: WebSocket, token: string) {
         this.token = token
@@ -45,7 +53,7 @@ export class Game {
         this.init()
     }
 
-    setTool(tool: "circle" | "pencil" | "rect") {
+    setTool(tool: "circle" | "pencil" | "rect" | "line") {
         this.selectedTool = tool
     }
 
@@ -93,6 +101,13 @@ export class Game {
                 this.ctx.arc(shape.centerX, shape.centerY, shape.radius, shape.startAngle, shape.endAngle);
                 this.ctx.stroke();
             }
+            else if(shape.type === "line"){
+                this.ctx.beginPath();
+                this.ctx.moveTo(shape.startX, shape.startY)
+                this.ctx.lineTo(shape.endX, shape.endY);
+                this.ctx.strokeStyle = "white"
+                this.ctx.stroke();
+            }
         })
     }
 
@@ -110,6 +125,9 @@ export class Game {
 
         const width = e.clientX - this.startX
         const height = e.clientY - this.startY
+
+        this.endX = (e.clientX)
+        this.endY = (e.clientY)
 
         const selectedTool = this.selectedTool
         let shape: Shapes | null = null
@@ -133,6 +151,14 @@ export class Game {
                 startAngle: 0,
                 endAngle: Math.PI * 2
             }
+        } else if (selectedTool === "line"){
+            shape = {
+                type: "line",
+                startX: this.startX,
+                startY: this.startY,
+                endX: this.endX,
+                endY: this.endY
+            }
         }
 
         if (!shape) return;
@@ -152,6 +178,9 @@ export class Game {
             const width = e.clientX - this.startX;
             const height = e.clientY - this.startY;
 
+            this.endX = (e.clientX)
+            this.endY = (e.clientY)
+
             this.clearCanvas()
 
             this.ctx.strokeStyle = "white"
@@ -166,6 +195,12 @@ export class Game {
                 this.ctx.beginPath()
                 this.ctx.strokeStyle = "white"
                 this.ctx.arc(this.centerX, this.centerY, radius, 0, Math.PI * 2);
+                this.ctx.stroke()
+            } else if(selectedTool === "line"){
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.startX, this.startY)
+                this.ctx.lineTo(this.endX, this.endY)
+                this.ctx.strokeStyle = "white"
                 this.ctx.stroke()
             }
         }

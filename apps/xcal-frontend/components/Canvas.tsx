@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useRef } from "react"
 import IconButton from "./IconButton"
-import { Pencil, Circle, RectangleHorizontal } from "lucide-react"
+import { Pencil, Circle, RectangleHorizontal, MoveRight } from "lucide-react"
 import { Game } from "@/game/game"
 import { toast } from "react-toastify"
 
 
-export type Tool = "pencil" | "circle" | "rect"
+export type Tool = "pencil" | "circle" | "rect" | "line"
 
 
 export default function Canvas({
@@ -71,6 +71,10 @@ function Topbar({
             <IconButton icon={<RectangleHorizontal />}
                 onClick={() => setSelectedTool("rect")}
                 activated={selectedTool === "rect"} />
+
+            <IconButton icon={<MoveRight />}
+                onClick={() => setSelectedTool("line")}
+                activated={selectedTool === "line"} />
         </div>
     )
 }
