@@ -76,7 +76,7 @@ export class Game {
 
     clearCanvas() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-        this.ctx.fillStyle = "black"
+        this.ctx.fillStyle = "rgba(0,0,0,0.95)"
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
 
         this.existingShapes.map(shape => {
@@ -138,7 +138,7 @@ export class Game {
         this.existingShapes.push(shape)
         this.socket.send(JSON.stringify({
             type: "chat",
-            message: JSON.stringify({
+            shape: JSON.stringify({
                 shape
             }),
             roomId: this.roomId

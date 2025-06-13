@@ -59,7 +59,7 @@ function Topbar({
     setSelectedTool: (s: Tool) => void
 }) {
     return (
-        <div>
+        <div className="flex gap-2 fixed top-0 left-0 p-5">
             <IconButton icon={<Pencil />}
                 onClick={() => setSelectedTool("pencil")}
                 activated={selectedTool === "pencil"} />
