@@ -11,7 +11,7 @@ export async function getExistingShapes(roomId: number, token: string) {
                 "Authorization": token  
             }
         })
-        console.log(response?.data?.shapes)
+        // console.log(response?.data?.shapes)
         message = response?.data?.shapes
         const shapes = message.map((x: {shape: string}) => {
             const parsedShape = JSON.parse(x.shape)

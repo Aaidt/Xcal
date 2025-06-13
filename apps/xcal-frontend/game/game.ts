@@ -20,7 +20,14 @@ type Shapes = {
     startX: number,
     startY: number,
     endX: number,
-    endY: number,
+    endY: number
+} | {
+    type: "triangle",
+    startX: number,
+    startY: number,
+    leftX: number,
+    baseY: number
+    rightX: number
 }
 
 export class Game {
@@ -33,12 +40,15 @@ export class Game {
     private clicked: boolean
     private startX = 0
     private startY = 0
-    private selectedTool: Tool = "circle"
+    private selectedTool: Tool = "pencil"
     private centerX = 0
     private centerY = 0
     private token: string
     private endX = 0
     private endY = 0
+    private leftX = 0
+    private baseY = 0
+    private rightX = 0
 
     constructor(canvas: HTMLCanvasElement, roomId: number, socket: WebSocket, token: string) {
         this.token = token
@@ -53,7 +63,7 @@ export class Game {
         this.init()
     }
 
-    setTool(tool: "circle" | "pencil" | "rect" | "line") {
+    setTool(tool: "circle" | "pencil" | "rect" | "line" | "triangle") {
         this.selectedTool = tool
     }
 
@@ -73,11 +83,11 @@ export class Game {
     initHandlers() {
         this.socket.onmessage = (event) => {
             const message = JSON.parse(event.data);
-            console.log(message);
+            // console.log(message);
 
             if (message.type === "chat") {
                 const parsedShape = JSON.parse(message.shape)
-                console.log(parsedShape);
+                // console.log(parsedShape);
                 this.existingShapes.push(parsedShape.shape);
                 this.clearCanvas();
             }
@@ -101,10 +111,19 @@ export class Game {
                 this.ctx.arc(shape.centerX, shape.centerY, shape.radius, shape.startAngle, shape.endAngle);
                 this.ctx.stroke();
             }
-            else if(shape.type === "line"){
+            else if (shape.type === "line") {
                 this.ctx.beginPath();
                 this.ctx.moveTo(shape.startX, shape.startY)
                 this.ctx.lineTo(shape.endX, shape.endY);
+                this.ctx.strokeStyle = "white"
+                this.ctx.stroke();
+            }
+            else if (shape.type === "triangle") {
+                this.ctx.beginPath();
+                this.ctx.moveTo(shape.startX, shape.startY)
+                this.ctx.lineTo(shape.leftX, shape.baseY);
+                this.ctx.lineTo(shape.rightX, shape.baseY);
+                this.ctx.closePath()
                 this.ctx.strokeStyle = "white"
                 this.ctx.stroke();
             }
@@ -151,13 +170,22 @@ export class Game {
                 startAngle: 0,
                 endAngle: Math.PI * 2
             }
-        } else if (selectedTool === "line"){
+        } else if (selectedTool === "line") {
             shape = {
                 type: "line",
                 startX: this.startX,
                 startY: this.startY,
                 endX: this.endX,
                 endY: this.endY
+            }
+        } else if (selectedTool === "triangle") {
+            shape = {
+                type: "triangle",
+                startX: this.startX,
+                startY: this.startY,
+                leftX: this.leftX,
+                baseY: this.baseY,
+                rightX: this.rightX
             }
         }
 
@@ -178,6 +206,11 @@ export class Game {
             const width = e.clientX - this.startX;
             const height = e.clientY - this.startY;
 
+            const baseWidth = height * 2
+            this.leftX = this.startX - baseWidth / 2
+            this.rightX = this.startX + baseWidth / 2
+            this.baseY = this.startY + height
+
             this.endX = (e.clientX)
             this.endY = (e.clientY)
 
@@ -196,12 +229,20 @@ export class Game {
                 this.ctx.strokeStyle = "white"
                 this.ctx.arc(this.centerX, this.centerY, radius, 0, Math.PI * 2);
                 this.ctx.stroke()
-            } else if(selectedTool === "line"){
+            } else if (selectedTool === "line") {
                 this.ctx.beginPath();
                 this.ctx.moveTo(this.startX, this.startY)
                 this.ctx.lineTo(this.endX, this.endY)
                 this.ctx.strokeStyle = "white"
                 this.ctx.stroke()
+            }else if (selectedTool === "triangle") {
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.startX, this.startY)
+                this.ctx.lineTo(this.leftX, this.baseY);
+                this.ctx.lineTo(this.rightX, this.baseY);
+                this.ctx.closePath()
+                this.ctx.strokeStyle = "white"
+                this.ctx.stroke();
             }
         }
     }
