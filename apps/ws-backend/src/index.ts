@@ -15,7 +15,7 @@ const users: User[] = []
 
 function getUserId(token: string): string | null {
     const parsedToken = token.split(" ")[1]
-    if(typeof parsedToken !== "string"){
+    if (typeof parsedToken !== "string") {
         console.log('This is not a string: ' + parsedToken)
         return null
     }
@@ -33,21 +33,20 @@ function getUserId(token: string): string | null {
 
 }
 
-wss.on("connection", function (ws, request) {
+wss.on("connection", function (ws) {
     console.log('Ws connection established!!!');
     let userId: string | null = null
 
-    wss.on("message", async function (data) {
+    ws.on("message", async function (data) {
         let parsedData;
-        if(typeof data !== "string"){
+        if (typeof data !== "string") {
             parsedData = JSON.parse(data.toString())
-        }else{
+        } else {
             parsedData = JSON.parse(data);
         }
-
+        console.log('Received message:', parsedData)
 
         if (parsedData.type === "auth") {
-
             try {
                 userId = getUserId(parsedData.token);
                 console.log(userId);
@@ -55,7 +54,7 @@ wss.on("connection", function (ws, request) {
                     console.log('Incorrect/missing token.')
                     ws.close();
                     return
-                } else {    
+                } else {
                     users.push({
                         userId,
                         ws,
@@ -72,7 +71,6 @@ wss.on("connection", function (ws, request) {
 
         }
         else if (userId) {
-
             const user = users.find(x => x.ws === ws)
             if (!user) {
                 console.log('No user found...')
@@ -84,6 +82,7 @@ wss.on("connection", function (ws, request) {
                 user?.room.push(parsedData.roomId)
                 ws.send(JSON.stringify({
                     type: "join-room",
+                    success: "true",
                     message: "Successfully joined the requested room. ✅",
                     roomId: parsedData.roomId
                 }))
@@ -94,6 +93,7 @@ wss.on("connection", function (ws, request) {
                 user?.room.filter(x => x !== parsedData.roomId)
                 ws.send(JSON.stringify({
                     type: "leave-room",
+                    success: "true",
                     message: isInRoom ? "Successfully removed from the room. ✅" : "❌ You are not in this room.",
                     roomId: parsedData.roomId
                 }))
