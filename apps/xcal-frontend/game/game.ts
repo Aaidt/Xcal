@@ -28,6 +28,12 @@ type Shapes = {
     leftX: number,
     baseY: number
     rightX: number
+} | {
+    type: "arrow",
+    toX: number,
+    toY: number,
+    fromX: number,
+    fromY: number
 }
 
 export class Game {
@@ -49,6 +55,10 @@ export class Game {
     private leftX = 0
     private baseY = 0
     private rightX = 0
+    private toX = 0
+    private toY = 0
+    private fromX = 0
+    private fromY = 0
 
     constructor(canvas: HTMLCanvasElement, roomId: number, socket: WebSocket, token: string) {
         this.token = token
@@ -101,6 +111,7 @@ export class Game {
 
         this.existingShapes.map(shape => {
             if (shape.type === "rect") {
+                this.ctx.lineWidth = 1
                 this.ctx.strokeStyle = "white"
                 this.ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
             }
@@ -126,6 +137,45 @@ export class Game {
                 this.ctx.closePath()
                 this.ctx.strokeStyle = "white"
                 this.ctx.stroke();
+            } else if (shape.type === "arrow") {
+                const fromX = shape.fromX;
+                const fromY = shape.fromY;
+                const toX = shape.toX;
+                const toY = shape.toY;
+
+                const width = 2; // thinner, change as needed
+                const headlen = 10;
+                const angle = Math.atan2(toY - fromY, toX - fromX);
+
+                // Compute shortened end point so arrowhead doesn't overlap line
+                const endX = toX - Math.cos(angle) * headlen;
+                const endY = toY - Math.sin(angle) * headlen;
+
+                // Draw main shaft
+                this.ctx.beginPath();
+                this.ctx.moveTo(fromX, fromY);
+                this.ctx.lineTo(endX, endY);
+                this.ctx.strokeStyle = "white";
+                this.ctx.lineWidth = width;
+                this.ctx.stroke();
+
+                // Draw arrowhead
+                this.ctx.beginPath();
+                this.ctx.moveTo(toX, toY);
+                this.ctx.lineTo(
+                    toX - headlen * Math.cos(angle - Math.PI / 7),
+                    toY - headlen * Math.sin(angle - Math.PI / 7)
+                );
+                this.ctx.lineTo(
+                    toX - headlen * Math.cos(angle + Math.PI / 7),
+                    toY - headlen * Math.sin(angle + Math.PI / 7)
+                );
+                this.ctx.lineTo(toX, toY);
+                this.ctx.closePath();
+
+                this.ctx.fillStyle = "white";
+                this.ctx.fill();
+                this.ctx.lineWidth = 1; // reset for next shape
             }
         })
     }
@@ -136,6 +186,8 @@ export class Game {
         this.startY = (e.clientY)
         this.centerX = (e.clientX)
         this.centerY = (e.clientY)
+        this.fromX = (e.clientX)
+        this.fromY = (e.clientY)
     }
 
 
@@ -187,6 +239,14 @@ export class Game {
                 baseY: this.baseY,
                 rightX: this.rightX
             }
+        } else if (selectedTool === "arrow") {
+            shape = {
+                type: "arrow",
+                fromX: this.fromX,
+                fromY: this.fromY,
+                toX: e.clientX,
+                toY: e.clientY
+            }
         }
 
         if (!shape) return;
@@ -235,7 +295,7 @@ export class Game {
                 this.ctx.lineTo(this.endX, this.endY)
                 this.ctx.strokeStyle = "white"
                 this.ctx.stroke()
-            }else if (selectedTool === "triangle") {
+            } else if (selectedTool === "triangle") {
                 this.ctx.beginPath();
                 this.ctx.moveTo(this.startX, this.startY)
                 this.ctx.lineTo(this.leftX, this.baseY);
@@ -243,6 +303,44 @@ export class Game {
                 this.ctx.closePath()
                 this.ctx.strokeStyle = "white"
                 this.ctx.stroke();
+            } else if (selectedTool === "arrow") {
+                const fromX = this.fromX;
+                const fromY = this.fromY;
+                const toX = e.clientX;
+                const toY = e.clientY;
+
+                const shaftWidth = 2;
+                const headlen = 10;
+                const angle = Math.atan2(toY - fromY, toX - fromX);
+
+                // Calculate shortened end point so head doesn't overlap shaft
+                const endX = toX - Math.cos(angle) * headlen;
+                const endY = toY - Math.sin(angle) * headlen;
+
+                // Draw shaft
+                this.ctx.beginPath();
+                this.ctx.moveTo(fromX, fromY);
+                this.ctx.lineTo(endX, endY);
+                this.ctx.strokeStyle = "white";
+                this.ctx.lineWidth = shaftWidth;
+                this.ctx.stroke();
+
+                // Draw arrowhead
+                this.ctx.beginPath();
+                this.ctx.moveTo(toX, toY);
+                this.ctx.lineTo(
+                    toX - headlen * Math.cos(angle - Math.PI / 7),
+                    toY - headlen * Math.sin(angle - Math.PI / 7)
+                );
+                this.ctx.lineTo(
+                    toX - headlen * Math.cos(angle + Math.PI / 7),
+                    toY - headlen * Math.sin(angle + Math.PI / 7)
+                );
+                this.ctx.closePath();
+
+                this.ctx.fillStyle = "white";
+                this.ctx.fill();
+                this.ctx.lineWidth = 1; // reset
             }
         }
     }
