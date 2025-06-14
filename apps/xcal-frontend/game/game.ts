@@ -77,7 +77,7 @@ export class Game {
         this.init()
     }
 
-    setTool(tool: "circle" | "pencil" | "rect" | "line" | "triangle" | "arrow") {
+    setTool(tool: "circle" | "pencil" | "rect" | "line" | "triangle" | "arrow" | "pointer") {
         this.selectedTool = tool
     }
 

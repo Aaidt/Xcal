@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useRef } from "react"
 import IconButton from "./IconButton"
-import { Pencil, Circle, Square, Slash, Triangle, ArrowRight } from "lucide-react"
+import { Pencil, Circle, Square, Slash, Triangle, ArrowRight, MousePointer } from "lucide-react"
 import { Game } from "@/game/game"
 import { toast } from "react-toastify"
 
 
-export type Tool = "pencil" | "circle" | "rect" | "line" | "triangle" | "arrow"
+export type Tool = "pencil" | "circle" | "rect" | "line" | "triangle" | "arrow" | "pointer"
 
 
 export default function Canvas({
@@ -60,30 +60,34 @@ function Topbar({
 }) {
     return (
         <div className="flex fixed top-5 left-1/2 -translate-x-1/2 z-50 p-2 border border-white/30 gap-5
-        bg-transparent backdrop-filter backdrop-blur-md rounded-md">
-            <IconButton icon={<Pencil />}
+        bg-black/10 backdrop-blur-md rounded-lg">
+            <IconButton icon={<Pencil className="w-4 h-4" />}
                 onClick={() => setSelectedTool("pencil")}
                 activated={selectedTool === "pencil"} />
 
-            <IconButton icon={<Circle />}
+            <IconButton icon={<Circle className="w-4 h-4" />}
                 onClick={() => setSelectedTool("circle")}
                 activated={selectedTool === "circle"} />
 
-            <IconButton icon={<Square />}
+            <IconButton icon={<Square className="w-4 h-4" />}
                 onClick={() => setSelectedTool("rect")}
                 activated={selectedTool === "rect"} />
 
-            <IconButton icon={<Slash />}
+            <IconButton icon={<Slash className="w-4 h-4" />}
                 onClick={() => setSelectedTool("line")}
                 activated={selectedTool === "line"} />
 
-            <IconButton icon={<Triangle />}
+            <IconButton icon={<Triangle className="w-4 h-4" />}
                 onClick={() => setSelectedTool("triangle")}
                 activated={selectedTool === "triangle"} />
 
-            <IconButton icon={<ArrowRight />}
+            <IconButton icon={<ArrowRight className="w-4 h-4" />}
                 onClick={() => setSelectedTool("arrow")}
                 activated={selectedTool === "arrow"} />
+
+            <IconButton icon={<MousePointer className="w-4 h-4" />}
+                onClick={() => setSelectedTool("pointer")}
+                activated={selectedTool === "pointer"} />
         </div>
     )
 }
