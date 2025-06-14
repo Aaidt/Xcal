@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useRef } from "react"
 import IconButton from "./IconButton"
-import { Pencil, Circle, RectangleHorizontal, Slash, Triangle } from "lucide-react"
+import { Pencil, Circle, Square, Slash, Triangle, ArrowRight } from "lucide-react"
 import { Game } from "@/game/game"
 import { toast } from "react-toastify"
 
 
-export type Tool = "pencil" | "circle" | "rect" | "line" | "triangle"
+export type Tool = "pencil" | "circle" | "rect" | "line" | "triangle" | "arrow"
 
 
 export default function Canvas({
@@ -59,8 +59,8 @@ function Topbar({
     setSelectedTool: (s: Tool) => void
 }) {
     return (
-        <div className="gap-1 fixed top-5 left-140 z-50 p-2 border border-white/30 flex justify-center 
-        items-center bg-transparent backdrop-filter backdrop-blur-md rounded-md ">
+        <div className="flex fixed top-5 left-1/2 -translate-x-1/2 z-50 p-2 border border-white/30 gap-5
+        bg-transparent backdrop-filter backdrop-blur-md rounded-md">
             <IconButton icon={<Pencil />}
                 onClick={() => setSelectedTool("pencil")}
                 activated={selectedTool === "pencil"} />
@@ -69,7 +69,7 @@ function Topbar({
                 onClick={() => setSelectedTool("circle")}
                 activated={selectedTool === "circle"} />
 
-            <IconButton icon={<RectangleHorizontal />}
+            <IconButton icon={<Square />}
                 onClick={() => setSelectedTool("rect")}
                 activated={selectedTool === "rect"} />
 
@@ -80,6 +80,10 @@ function Topbar({
             <IconButton icon={<Triangle />}
                 onClick={() => setSelectedTool("triangle")}
                 activated={selectedTool === "triangle"} />
+
+            <IconButton icon={<ArrowRight />}
+                onClick={() => setSelectedTool("arrow")}
+                activated={selectedTool === "arrow"} />
         </div>
     )
 }

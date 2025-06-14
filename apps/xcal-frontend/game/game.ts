@@ -63,7 +63,7 @@ export class Game {
         this.init()
     }
 
-    setTool(tool: "circle" | "pencil" | "rect" | "line" | "triangle") {
+    setTool(tool: "circle" | "pencil" | "rect" | "line" | "triangle" | "arrow") {
         this.selectedTool = tool
     }
 
@@ -96,7 +96,7 @@ export class Game {
 
     clearCanvas() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-        this.ctx.fillStyle = "rgba(0,0,0,0.95)"
+        this.ctx.fillStyle = "#121212"
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
 
         this.existingShapes.map(shape => {
