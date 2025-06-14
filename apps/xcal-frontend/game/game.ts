@@ -34,6 +34,9 @@ type Shapes = {
     toY: number,
     fromX: number,
     fromY: number
+} | {
+    type: "pencil",
+    path: { x: number, y: number }[]
 }
 
 export class Game {
@@ -59,6 +62,7 @@ export class Game {
     private toY = 0
     private fromX = 0
     private fromY = 0
+    private pencilPath: { x: number, y: number }[] = [];
 
     constructor(canvas: HTMLCanvasElement, roomId: number, socket: WebSocket, token: string) {
         this.token = token
@@ -115,7 +119,24 @@ export class Game {
                 this.ctx.strokeStyle = "white"
                 this.ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
             }
+            else if (shape.type === "pencil") {
+                this.ctx.beginPath();
+                this.ctx.moveTo(shape.path[0].x, shape.path[0].y);
 
+                for (let i = 1; i < shape.path.length - 1; i++) {
+                    const midX = (shape.path[i].x + shape.path[i + 1].x) / 2;
+                    const midY = (shape.path[i].y + shape.path[i + 1].y) / 2;
+
+                    this.ctx.quadraticCurveTo(shape.path[i].x, shape.path[i].y, midX, midY);
+                }
+
+                const last = shape.path[shape.path.length - 1];
+                this.ctx.lineTo(last.x, last.y);
+
+                this.ctx.strokeStyle = "white";
+                this.ctx.lineWidth = 2;
+                this.ctx.stroke();
+            }
             else if (shape.type === "circle") {
                 this.ctx.beginPath()
                 this.ctx.strokeStyle = "white"
@@ -143,15 +164,13 @@ export class Game {
                 const toX = shape.toX;
                 const toY = shape.toY;
 
-                const width = 2; // thinner, change as needed
+                const width = 2;
                 const headlen = 10;
                 const angle = Math.atan2(toY - fromY, toX - fromX);
 
-                // Compute shortened end point so arrowhead doesn't overlap line
                 const endX = toX - Math.cos(angle) * headlen;
                 const endY = toY - Math.sin(angle) * headlen;
 
-                // Draw main shaft
                 this.ctx.beginPath();
                 this.ctx.moveTo(fromX, fromY);
                 this.ctx.lineTo(endX, endY);
@@ -159,7 +178,6 @@ export class Game {
                 this.ctx.lineWidth = width;
                 this.ctx.stroke();
 
-                // Draw arrowhead
                 this.ctx.beginPath();
                 this.ctx.moveTo(toX, toY);
                 this.ctx.lineTo(
@@ -175,19 +193,24 @@ export class Game {
 
                 this.ctx.fillStyle = "white";
                 this.ctx.fill();
-                this.ctx.lineWidth = 1; // reset for next shape
+                this.ctx.lineWidth = 1;
             }
         })
     }
 
     mouseDownHandler = (e: MouseEvent) => {
         this.clicked = true
+
         this.startX = (e.clientX)
         this.startY = (e.clientY)
+
         this.centerX = (e.clientX)
         this.centerY = (e.clientY)
+
         this.fromX = (e.clientX)
         this.fromY = (e.clientY)
+
+        this.pencilPath = [{ x: (e.clientX), y: (e.clientY) }]
     }
 
 
@@ -209,6 +232,11 @@ export class Game {
                 y: this.startY,
                 width,
                 height
+            }
+        } else if (selectedTool === "pencil") {
+            shape = {
+                type: "pencil",
+                path: this.pencilPath
             }
         } else if (selectedTool === "circle") {
             const dx = e.clientX - this.centerX;
@@ -313,11 +341,9 @@ export class Game {
                 const headlen = 10;
                 const angle = Math.atan2(toY - fromY, toX - fromX);
 
-                // Calculate shortened end point so head doesn't overlap shaft
                 const endX = toX - Math.cos(angle) * headlen;
                 const endY = toY - Math.sin(angle) * headlen;
 
-                // Draw shaft
                 this.ctx.beginPath();
                 this.ctx.moveTo(fromX, fromY);
                 this.ctx.lineTo(endX, endY);
@@ -325,7 +351,6 @@ export class Game {
                 this.ctx.lineWidth = shaftWidth;
                 this.ctx.stroke();
 
-                // Draw arrowhead
                 this.ctx.beginPath();
                 this.ctx.moveTo(toX, toY);
                 this.ctx.lineTo(
@@ -340,7 +365,31 @@ export class Game {
 
                 this.ctx.fillStyle = "white";
                 this.ctx.fill();
-                this.ctx.lineWidth = 1; // reset
+                this.ctx.lineWidth = 1;
+            } else if (selectedTool === "pencil") {
+                this.pencilPath.push({ x: e.clientX, y: e.clientY });
+
+                this.clearCanvas();
+
+                const path = this.pencilPath;
+                if (path.length < 2) return;
+
+                this.ctx.beginPath();
+                this.ctx.moveTo(path[0].x, path[0].y);
+
+                for (let i = 1; i < path.length - 1; i++) {
+                    const midX = (path[i].x + path[i + 1].x) / 2;
+                    const midY = (path[i].y + path[i + 1].y) / 2;
+
+                    this.ctx.quadraticCurveTo(path[i].x, path[i].y, midX, midY);
+                }
+
+                const last = path[path.length - 1];
+                this.ctx.lineTo(last.x, last.y);
+
+                this.ctx.strokeStyle = "white";
+                this.ctx.lineWidth = 2;
+                this.ctx.stroke();
             }
         }
     }
