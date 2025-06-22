@@ -105,8 +105,13 @@ export default function Home() {
   return (
     <div className="bg-black text-white max-w-screen min-h-screen overflow-hidden">
 
-      <div className="fixed z-50 top-0 left-0 border-y border-white/20 bg-black backdrop-filter backdrop-blur-md bg-transparent w-screen h-20">
-        <div className="flex justify-between items-center h-full px-6">
+      <motion.div
+        initial={{ opacity: 0, y: -40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }} className="fixed z-50 top-0 left-0 border-y border-white/20 bg-black backdrop-filter backdrop-blur-md bg-transparent w-screen h-20">
+        <div
+          className="flex justify-between items-center h-full px-6">
 
           <div className="text-4xl font-bold flex items-center cursor-pointer">Xcal</div>
 
@@ -133,17 +138,21 @@ export default function Home() {
 
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="flex justify-between p-5 pt-32 pl-25 pr-25 pb-20 border-b border-white/30">
 
-        <div className="flex flex-col pt-5">
+        <motion.div
+          initial={{ opacity: 0, x: -40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }} className="flex flex-col pt-5">
           <div className="tracking-wide font-bold text-6xl pb-5">
             Draw and collaborate <br />
             in real-time
           </div>
 
-          <div className=" text-xl text-gray-400 text-justify text-wrap leading-8">
+          <div className=" text-lg text-gray-400 text-justify text-wrap ">
             Create beautiful diagrams, sketches and wireframes with a <br />
             simple, intuitive interface. Share your ideas with your team in <br />
             real-time and bring your concpets to life.
@@ -163,9 +172,15 @@ export default function Home() {
             <Users className="mr-2" /> 15,000+ teams already using Excal.
           </div>
 
-        </div>
+        </motion.div>
 
-        <Image className="hover:shadow-lg transition-all duration-200 hover:shadow-white/30" src="https://i.pinimg.com/736x/6e/22/33/6e22335dfb94c453afefc69cb46528f2.jpg" alt="image" width={400} height={500} />
+        <motion.div
+          initial={{ opacity: 0, x: 40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}>
+          <Image className="hover:shadow-lg transition-all duration-200 hover:shadow-white/30" src="https://i.pinimg.com/736x/6e/22/33/6e22335dfb94c453afefc69cb46528f2.jpg" alt="image" width={400} height={500} />
+        </motion.div>
       </div>
 
 
@@ -208,7 +223,8 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: index * 0.2 }}
-              className="bg-black border border-white/30 text-white/90 p-6 w-102 rounded-md transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-white/10"
+              className="bg-black border border-white/30 text-white/90 p-6 w-102 rounded-md transition-all 
+              duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-white/10"
             >
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
@@ -246,7 +262,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: index * 0.2 }}
               className={`bg-black text-white p-8 rounded-lg flex flex-col w-78
-                  ${tier.popular ? "shadow-md shadow-white/60 border-2 border-white hover:shadow-lg transition-all duration-300"
+                  ${tier.popular ? "shadow-md shadow-white/60 border-1 border-white/70 hover:shadow-lg transition-all duration-300"
                   : "hover:shadow-white/80 border border-white/30 duration-300 transition-all hover:shadow-md duration-300"}`}
             >
               {tier.popular && (
@@ -281,21 +297,30 @@ export default function Home() {
 
       <div className="pt-15 pb-20 border border-white/30 bg-white text-black flex ">
 
-        <div className="pl-25">
+        <motion.div
+          initial={{ opacity: 0, x: -40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }} className="pl-25">
           <h1 className="text-4xl font-bold pb-6">Ready to bring your ideas to life?</h1>
           <p className="text-gray-600 text-lg">Join thousands of teams who use Excal to collaborate, ideate,
             <br /> and create amazing visuals together</p>
-        </div>
-        <div className="flex jusify-center items-center pl-15 gap-8">
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }} className="flex jusify-center items-center pl-15 gap-8">
           <button className="cursor-pointer bg-black/80 text-white rounded-md px-4 py-2 hover:bg-black/90 duration-300 transition-all flex">
             Start for free <ChevronRight />
           </button>
           <button className="bg-white cursor-pointer hover:bg-black/20 text-black rounded-md px-4 py-2 border border-black/30 duration-300 transition-all">See live demo</button>
-        </div>
+        </motion.div>
 
       </div>
 
-      <div className="pt-10 pb-15 border border-white/30">
+      {/* <div className="pt-10 pb-15 border border-white/30">
 
         <div className="grid grid-cols-4 gap-8">
           <div className="pl-8">
@@ -318,10 +343,10 @@ export default function Home() {
 
         </div>
 
-      </div>
+      </div> */}
 
 
-    </div>
+    </div >
   );
 }
 
