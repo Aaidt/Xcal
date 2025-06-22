@@ -46,7 +46,7 @@ roomRouter.post("/", async function (req: Request, res: Response) {
 
 })
 
-    
+
 roomRouter.get("/:slug", async function (req: Request, res: Response) {
     const slug = req.params.slug;
 
@@ -113,7 +113,25 @@ roomRouter.get("/shapes/:roomId", async function (req: Request, res: Response) {
 
 })
 
+roomRouter.get('/all', async function (req: Request, res: Response) {
+    const userId = req.userId
 
+    try {
+        const rooms = await prismaClient.room.findMany({
+            where: {
+                adminId: userId
+            }
+        })
+        if(!rooms){
+            res.status(404).json({
+                message: 'This user is not the admin of any room.'
+            })
+        }
+        res.status(200).json({ rooms })
+    } catch (e) {
+        res.status(404).json({ message: "This user has no rooms. " + e })
+    }
+})
 
 
 export default roomRouter

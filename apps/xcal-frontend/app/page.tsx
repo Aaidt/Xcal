@@ -87,20 +87,20 @@ export default function Home() {
     }
   ]
 
-  const footer = [
-    {
-      title: "Product",
-      links: ["Features", "Pricing", "Integrations"],
-    },
-    {
-      title: "Resources",
-      links: ["Blog", "Guides", "Help Center"],
-    },
-    {
-      title: "Company",
-      links: ["About", "Careers", "Contact", "Privacy"],
-    }
-  ]
+  // const footer = [
+  //   {
+  //     title: "Product",
+  //     links: ["Features", "Pricing", "Integrations"],
+  //   },
+  //   {
+  //     title: "Resources",
+  //     links: ["Blog", "Guides", "Help Center"],
+  //   },
+  //   {
+  //     title: "Company",
+  //     links: ["About", "Careers", "Contact", "Privacy"],
+  //   }
+  // ]
 
   return (
     <div className="bg-black text-white max-w-screen min-h-screen overflow-hidden">
