@@ -2,9 +2,9 @@ import { Router, Request, Response } from "express"
 import jwt from "jsonwebtoken"
 import { prismaClient } from "@repo/db/client"
 import bcrypt from "bcrypt"
-import { z } from "zod"
 import { JWT_SECRET } from "@repo/backend-common/config"
 import { CreateUserSchema, LoginSchema } from './types'
+import { Middleware } from "./middleware"
 
 const authRouter: Router = Router();
 
@@ -92,6 +92,35 @@ authRouter.post("/signin", async function (req: Request, res: Response) {
 
 })
 
+authRouter.get("/me", Middleware,  async function (req: Request, res: Response){
+    const userId = req.userId
 
+    try{
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            },
+            select: {
+                username: true,
+                name: true,
+                photo: true
+            }
+    });
+
+    if(!user){
+        console.log("No user found!!!")
+        res.status(404).json({ message: "No user found!!!" })
+        return
+    }
+
+    res.status(200).json({ user })
+
+    }catch(err){
+        console.log('Server error')
+        res.status(500).json({ 
+            message: "server error"
+        })
+    }
+})
 
 export default authRouter
