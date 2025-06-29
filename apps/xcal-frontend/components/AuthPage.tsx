@@ -63,7 +63,7 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
     function routeToPage(response: AuthResponse) {
         if (response.token) {
             localStorage.setItem('Authorization', `Bearer ${response.token}`)
-            router.push("/room")
+            router.push("/dashboard")
         } else {
             router.push("/signin");
         }

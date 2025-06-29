@@ -44,12 +44,12 @@ wss.on("connection", function (ws) {
         } else {
             parsedData = JSON.parse(data);
         }
-        console.log('Received message:', parsedData)
+        // console.log('Received message:', parsedData)
 
         if (parsedData.type === "auth") {
             try {
                 userId = getUserId(parsedData.token);
-                console.log(userId);
+                // console.log(userId);
                 if (userId === null) {
                     console.log('Incorrect/missing token.')
                     ws.close();

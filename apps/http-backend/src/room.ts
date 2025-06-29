@@ -39,7 +39,7 @@ roomRouter.post("/", async function (req: Request, res: Response) {
             roomId: room.id
         })
     } catch (e) {
-        res.status(403).json({
+        res.status(500).json({
             message: "Room with that name already exists.❌❌"
         })
     }
@@ -47,36 +47,6 @@ roomRouter.post("/", async function (req: Request, res: Response) {
 })
 
 
-roomRouter.get("/:slug", async function (req: Request, res: Response) {
-    const slug = req.params.slug;
-
-    if (!slug) {
-        res.status(403).json({ message: "Name of the room not provided." })
-        return
-    }
-
-    try {
-        const room = await prismaClient.room.findFirst({
-            where: {
-                slug: slug
-            }
-        });
-
-        if (!room) {
-            res.status(404).json({ message: "Room could not be found." })
-            return
-        }
-
-        res.status(200).json({
-            roomId: room.id
-        })
-
-    } catch (e) {
-        res.status(403).json({
-            message: "Room with that name could not be found."
-        })
-    }
-})
 
 
 roomRouter.get("/shapes/:roomId", async function (req: Request, res: Response) {
@@ -105,7 +75,7 @@ roomRouter.get("/shapes/:roomId", async function (req: Request, res: Response) {
         })
 
     } catch (e) {
-        res.status(403).json({
+        res.status(500).json({
             message: "Could not find the desired room."
         })
         console.log("Could not find the desired room.")
@@ -113,25 +83,88 @@ roomRouter.get("/shapes/:roomId", async function (req: Request, res: Response) {
 
 })
 
-roomRouter.get('/all', async function (req: Request, res: Response) {
+roomRouter.get('/admin', async function (req: Request, res: Response) {
     const userId = req.userId
 
     try {
-        const rooms = await prismaClient.room.findMany({
+        const adminRooms = await prismaClient.room.findMany({
             where: {
                 adminId: userId
             }
         })
-        if(!rooms){
+        if(!adminRooms){
+            console.log('This user is not the admin of any room')
             res.status(404).json({
                 message: 'This user is not the admin of any room.'
             })
         }
-        res.status(200).json({ rooms })
+        res.status(200).json({ adminRooms })
     } catch (e) {
-        res.status(404).json({ message: "This user has no rooms. " + e })
+        console.log('This user is not the admin of any room' + e)
+        res.status(500).json({ message: "This user has no rooms. " + e })
     }
 })
 
+
+roomRouter.get("/visited", async function(req: Request, res: Response) {
+    const userId = req.userId
+
+    try{
+        const visitedRooms = await prismaClient.room.findMany({
+            where: {
+                users: {
+                    some: {
+                        id: userId
+                    }
+                },
+                NOT: {
+                    adminId: userId
+                }
+            }
+        })
+
+        if(!visitedRooms){
+            console.log('user has not visited any other rooms.')
+            res.status(404).json({ message: "user has not visited any other rooms."})
+        }
+        res.status(200).json({ visitedRooms })
+    }catch(err){
+        console.log(err);
+        res.status(500).json({
+            message: "This user has not visited any other rooms."
+        })
+    }
+})
+
+roomRouter.get("/:slug", async function (req: Request, res: Response) {
+    const slug = req.params.slug;
+
+    if (!slug) {
+        res.status(403).json({ message: "Name of the room not provided." })
+        return
+    }
+
+    try {
+        const room = await prismaClient.room.findFirst({
+            where: {
+                slug: slug
+            }
+        });
+
+        if (!room) {
+            res.status(404).json({ message: "Room could not be found." })
+            return
+        }
+
+        res.status(200).json({
+            roomId: room.id
+        })
+
+    } catch (e) {
+        res.status(500).json({
+            message: "Room with that name could not be found."
+        })
+    }
+})
 
 export default roomRouter
