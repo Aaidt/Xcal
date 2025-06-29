@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import axios from 'axios'
 import RoomCard from '@/components/RoomCard'
 import { motion } from "framer-motion"
@@ -17,9 +17,26 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 export default function Dashboard() {
     const router = useRouter()
 
-  const [adminRooms, setAdminRooms] = useState<Room[]>([])
-  const [visitedRooms, setVisitedRooms] = useState<Room[]>([])
-  const [name, setName] = useState<string>("")
+    const [adminRooms, setAdminRooms] = useState<Room[]>([])
+    const [visitedRooms, setVisitedRooms] = useState<Room[]>([])
+    const [isOpen, setIsOpen] = useState(false)
+    const [name, setName] = useState<string>("")
+    const dropdownRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+          setIsOpen(false)
+        }
+    }
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [])
+
+   const handleLogout = () => {
+    localStorage.removeItem('authorization') 
+    router.push('/')                         
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,11 +76,40 @@ export default function Dashboard() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}>
             <div className='flex justify-between items-center'>
-                <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-                <div className='mr-10 flex gap-2'>
-                <p>Welcome!</p>
-                <p className='font-medium'>{name}</p>    
-                </div>
+                <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
+                  <div className="relative" ref={dropdownRef}>
+                    <button onClick={() => setIsOpen(!isOpen)} className="hover:bg-white/5 duration-200 
+                      transition-all rounded-full p-2 cursor-pointer">
+                      <User />
+                    </button>
+
+                    {isOpen && (
+                      <div className="absolute right-0 mt-2 px-4 py-2 w-40 bg-gray-500 text-black 
+                        font-medium shadow-md rounded-md z-10">
+                        <p className='border-b border-black/30 pb-1 text-left text-sm font-medium '>{name}</p>
+
+                        <button
+                          onClick={handleLogout}
+                          className="w-full text-left pt-1 text-sm rounded-md cursor-pointer"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+
+                    {/* <div
+                        className=''
+                        onClick={() => {
+                            setDrop(!drop)
+                        }}
+                    >
+                    <User />
+                    {drop ? <div className='p-2 absolute mt-2 right-5 bg-white/10 rounded-md border border-white/20 flex gap-2'>
+                        <p className='font-medium'>{name}</p>    
+                    </div> : null }
+                </div> */}
             </div>
 
       <div className="mb-8 p-5">
