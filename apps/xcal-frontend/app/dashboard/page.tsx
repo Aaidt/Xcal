@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import RoomCard from '@/components/RoomCard'
+import { motion } from "framer-motion"
 
 interface Room {
   id: number
@@ -36,7 +37,12 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-15 min-h-screen min-w-screen mx-auto bg-black/95 text-white">
+        <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}>
       <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
 
       <div className="mb-8">
@@ -63,7 +69,8 @@ export default function Dashboard() {
             ))}
           </div>
         )}
+        </div>
+    </motion.div>
       </div>
-    </div>
   )
 }
