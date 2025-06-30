@@ -228,7 +228,7 @@ export default function Home() {
             >
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 fill-white mb-4" />
+                  <Star key={i} className="h-5 w-5 fill-yellow-600 text-yellow-600 mb-4" />
                 ))}
               </div>
               <div className="text-lg pb-6">&ldquo;{testimonial.quote}&rdquo;</div>
