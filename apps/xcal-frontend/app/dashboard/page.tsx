@@ -78,7 +78,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="p-15 min-h-screen min-w-screen mx-auto bg-black/95 text-white">
+    <div className="p-15 min-h-screen max-w-screen mx-auto bg-black/95 text-white">
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}

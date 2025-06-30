@@ -259,8 +259,11 @@ export class Game {
                 this.ctx.fillStyle = "white";
                 this.ctx.fill();
                 this.ctx.lineWidth = 1;
-            } else if (shape.type === "eraser") {
-                this.ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
+            }
+        })
+        this.existingShapes.map(shape => {
+            if (shape.type === "eraser") {
+                this.ctx.fillStyle = "#121212";
                 this.ctx.fillRect(shape.x, shape.y, shape.width, shape.height);
             }
         })
@@ -338,16 +341,6 @@ export class Game {
         const selectedTool = this.selectedTool
         let shape: Shapes | null = null
 
-        if (this.selectedTool === "eraser") {
-            this.Erase(this.startX, this.startY, width, height);
-            return;
-        }
-        this.socket.send(JSON.stringify({
-            type: "erase",
-            area: { x: this.startX, y: this.startY, width, height },
-            roomId: this.roomId
-        }));
-
 
         if (selectedTool === "rect") {
             shape = {
@@ -399,6 +392,16 @@ export class Game {
                 toX: e.clientX,
                 toY: e.clientY
             }
+        } else if (selectedTool === "eraser") {
+            shape = {
+                type: "eraser",
+                x: this.startX,
+                y: this.startY,
+                width,
+                height,
+            };
+
+            this.Erase(this.startX, this.startY, width, height);
         }
 
         if (!shape) return;

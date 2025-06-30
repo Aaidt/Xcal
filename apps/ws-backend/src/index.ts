@@ -114,36 +114,6 @@ wss.on("connection", function (ws) {
                 }))
             }
 
-            if (parsedData.type === "erase") {
-                const { x, y, width, height, roomId } = parsedData;
-
-                await prismaClient.shape.create({
-                    data: {
-                        shape: JSON.stringify({
-                            type: "eraser",
-                            x,
-                            y,
-                            width,
-                            height
-                        }),
-                        roomId: Number(roomId),
-                        userId
-                    }
-                });
-
-                users.forEach(user => {
-                    if (user.room.includes(roomId)) {
-                        user.ws.send(JSON.stringify({
-                            type: "erase",
-                            area: { x, y, width, height },
-                            from: userId,
-                            roomId
-                        }));
-                    }
-                });
-            }
-
-
             if (parsedData.type === "chat") {
 
                 await prismaClient.shape.create({
