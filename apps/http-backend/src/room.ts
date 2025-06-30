@@ -40,13 +40,11 @@ roomRouter.post("/", async function (req: Request, res: Response) {
         })
     } catch (e) {
         res.status(500).json({
-            message: "Room with that name already exists.❌❌"
+            message: "Room with that name already exists."
         })
     }
 
 })
-
-
 
 
 roomRouter.get("/shapes/:roomId", async function (req: Request, res: Response) {
@@ -92,7 +90,7 @@ roomRouter.get('/admin', async function (req: Request, res: Response) {
                 adminId: userId
             }
         })
-        if(!adminRooms){
+        if (!adminRooms) {
             console.log('This user is not the admin of any room')
             res.status(404).json({
                 message: 'This user is not the admin of any room.'
@@ -106,29 +104,30 @@ roomRouter.get('/admin', async function (req: Request, res: Response) {
 })
 
 
-roomRouter.get("/visited", async function(req: Request, res: Response) {
+roomRouter.get("/visited", async function (req: Request, res: Response) {
     const userId = req.userId
 
-    try{
+    try {
         const visitedRooms = await prismaClient.room.findMany({
             where: {
                 users: {
                     some: {
-                        id: userId
-                    }
+                        id: userId,
+                    },
                 },
                 NOT: {
-                    adminId: userId
-                }
-            }
-        })
+                    adminId: userId,
+                },
+            },
+        });
 
-        if(!visitedRooms){
+
+        if (!visitedRooms) {
             console.log('user has not visited any other rooms.')
-            res.status(404).json({ message: "user has not visited any other rooms."})
+            res.status(404).json({ message: "user has not visited any other rooms." })
         }
         res.status(200).json({ visitedRooms })
-    }catch(err){
+    } catch (err) {
         console.log(err);
         res.status(500).json({
             message: "This user has not visited any other rooms."

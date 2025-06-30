@@ -80,6 +80,21 @@ wss.on("connection", function (ws) {
 
             if (parsedData.type === "join-room") {
                 user?.room.push(parsedData.roomId)
+                const roomId = parsedData.roomId
+
+                await prismaClient.room.update({
+                    where: {
+                        id: roomId
+                    }, 
+                    data: {
+                        users: {
+                            connect: {
+                                id: userId
+                            }
+                        }
+                    }
+                })
+
                 ws.send(JSON.stringify({
                     type: "join-room",
                     success: "true",
