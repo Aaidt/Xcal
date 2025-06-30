@@ -88,7 +88,7 @@ export default function Dashboard() {
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
           <div className="relative flex items-center" ref={dropdownRef}>
-            <p className="mx-4 px-4 py-2 pb-1 text-lg font-thin">
+            <p className="mx-4 px-4 py-2 pb-1 text-md font-medium">
                 Welcome!  {name}
             </p>
             <button
@@ -105,7 +105,7 @@ export default function Dashboard() {
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.2 }}
-                className="absolute translate-y-10 right-0 mt-2 w-45 bg-[#848884] text-black 
+                className="absolute translate-y-10 right-0 mt-2 w-45 bg-red-900 text-white hover:bg-red-800 
                         font-medium shadow-md rounded-md z-10"
               >
                 <button
@@ -126,7 +126,7 @@ export default function Dashboard() {
             }}
             className="cursor-pointer text-xl font-semibold mb-4"
           >
-            Your Admin Rooms
+            Rooms you are the admin of:
           </h2>
           {adminRooms.length === 0 ? (
             <p className="text-gray-500">You are not admin of any rooms.</p>
@@ -140,7 +140,7 @@ export default function Dashboard() {
         </div>
 
         <div className="p-5">
-          <h2 className="text-xl font-semibold mb-4">Visited Rooms</h2>
+          <h2 className="text-xl font-semibold mb-4">Rooms you have visited:</h2>
           {visitedRooms.length === 0 ? (
             <p className="text-gray-500">You havent visited any rooms yet.</p>
           ) : (

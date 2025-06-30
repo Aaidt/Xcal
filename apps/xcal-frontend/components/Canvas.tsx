@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useRef } from "react"
 import IconButton from "./IconButton"
-import { Pencil, Circle, Square, Slash, Triangle, ArrowRight, MousePointer } from "lucide-react"
+import { Pencil, Circle, Square, Slash, Triangle, ArrowRight, MousePointer, Eraser } from "lucide-react"
 import { Game } from "@/game/game"
 import { toast } from "react-toastify"
 
 
-export type Tool = "pencil" | "circle" | "rect" | "line" | "triangle" | "arrow" | "pointer"
+export type Tool = "pencil" | "circle" | "rect" | "line" | "triangle" | "arrow" | "pointer" | "eraser"
 
 
 export default function Canvas({
@@ -59,8 +59,12 @@ function Topbar({
     setSelectedTool: (s: Tool) => void
 }) {
     return (
-        <div className="flex fixed top-5 left-1/2 -translate-x-1/2 z-50 p-2 border border-white/30 gap-5
-        bg-black/10 backdrop-blur-md rounded-lg">
+        <div className="flex fixed top-5 left-1/2 -translate-x-1/2 z-50 p-2 border border-white/30 gap-2
+        bg-gray-800 backdrop-blur-md rounded-lg">
+            <IconButton icon={<MousePointer className="w-4 h-4" />}
+                onClick={() => setSelectedTool("pointer")}
+                activated={selectedTool === "pointer"} />
+
             <IconButton icon={<Pencil className="w-4 h-4" />}
                 onClick={() => setSelectedTool("pencil")}
                 activated={selectedTool === "pencil"} />
@@ -85,9 +89,10 @@ function Topbar({
                 onClick={() => setSelectedTool("arrow")}
                 activated={selectedTool === "arrow"} />
 
-            <IconButton icon={<MousePointer className="w-4 h-4" />}
-                onClick={() => setSelectedTool("pointer")}
-                activated={selectedTool === "pointer"} />
+            <IconButton icon={<Eraser className="w-4 h-4" />}
+                onClick={() => setSelectedTool("eraser")}
+                activated={selectedTool === "eraser"} />
+
         </div>
     )
 }

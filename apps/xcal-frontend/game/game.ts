@@ -37,6 +37,12 @@ type Shapes = {
 } | {
     type: "pencil",
     path: { x: number, y: number }[]
+} | {
+    type: "eraser",
+    x: number,
+    y: number,
+    width: number,
+    height: number,
 }
 
 export class Game {
@@ -49,7 +55,7 @@ export class Game {
     private clicked: boolean
     private startX = 0
     private startY = 0
-    private selectedTool: Tool = "pencil"
+    private selectedTool: Tool = "pointer"
     private centerX = 0
     private centerY = 0
     private token: string
@@ -63,6 +69,15 @@ export class Game {
     private fromX = 0
     private fromY = 0
     private pencilPath: { x: number, y: number }[] = [];
+    private doesRectIntersect(a: { x: number; y: number; width: number; height: number }, b: { x: number; y: number; width: number; height: number }) {
+        return (
+            a.x < b.x + b.width &&
+            a.x + a.width > b.x &&
+            a.y < b.y + b.height &&
+            a.y + a.height > b.y
+        );
+    }
+
 
     constructor(canvas: HTMLCanvasElement, roomId: number, socket: WebSocket, token: string) {
         this.token = token
@@ -77,7 +92,7 @@ export class Game {
         this.init()
     }
 
-    setTool(tool: "circle" | "pencil" | "rect" | "line" | "triangle" | "arrow" | "pointer") {
+    setTool(tool: "circle" | "pencil" | "rect" | "line" | "triangle" | "arrow" | "pointer" | "eraser") {
         this.selectedTool = tool
     }
 
@@ -105,7 +120,57 @@ export class Game {
                 this.existingShapes.push(parsedShape.shape);
                 this.clearCanvas();
             }
+
+
+            if (message.type === "erase") {
+                const { x, y, width, height } = message.area;
+
+                this.existingShapes = this.existingShapes.filter(shape => {
+                    if (shape.type === "rect") {
+                        return !(
+                            shape.x < x + width &&
+                            shape.x + shape.width > x &&
+                            shape.y < y + height &&
+                            shape.y + shape.height > y
+                        );
+                    }
+
+                    if (shape.type === "circle") {
+                        const distX = Math.abs(shape.centerX - (x + width / 2));
+                        const distY = Math.abs(shape.centerY - (y + height / 2));
+                        const maxDist = shape.radius + Math.max(width, height) / 2;
+                        return distX > maxDist || distY > maxDist;
+                    }
+
+                    if (shape.type === "line") {
+                        return !(shape.startX >= x && shape.startX <= x + width &&
+                            shape.startY >= y && shape.startY <= y + height);
+                    }
+
+                    if (shape.type === "triangle") {
+                        return !(shape.startX >= x && shape.startX <= x + width &&
+                            shape.startY >= y && shape.startY <= y + height);
+                    }
+
+                    if (shape.type === "arrow") {
+                        return !(shape.fromX >= x && shape.fromX <= x + width &&
+                            shape.fromY >= y && shape.fromY <= y + height);
+                    }
+
+                    if (shape.type === "pencil") {
+                        return !shape.path.some(p => (
+                            p.x >= x && p.x <= x + width &&
+                            p.y >= y && p.y <= y + height
+                        ));
+                    }
+                    return true;
+                });
+
+                this.clearCanvas();
+            }
         }
+
+
     }
 
     clearCanvas() {
@@ -194,9 +259,56 @@ export class Game {
                 this.ctx.fillStyle = "white";
                 this.ctx.fill();
                 this.ctx.lineWidth = 1;
+            } else if (shape.type === "eraser") {
+                this.ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
+                this.ctx.fillRect(shape.x, shape.y, shape.width, shape.height);
             }
         })
     }
+
+    Erase(eraserX: number, eraserY: number, eraserWidth: number, eraserHeight: number) {
+        const eraserBox = { x: eraserX, y: eraserY, width: eraserWidth, height: eraserHeight };
+
+        this.existingShapes = this.existingShapes.filter(shape => {
+            if (shape.type === "rect") {
+                return !this.doesRectIntersect(shape, eraserBox);
+            }
+
+            if (shape.type === "circle") {
+                const distX = Math.abs(shape.centerX - (eraserX + eraserWidth / 2));
+                const distY = Math.abs(shape.centerY - (eraserY + eraserHeight / 2));
+                const maxDist = shape.radius + Math.max(eraserWidth, eraserHeight) / 2;
+                return distX > maxDist || distY > maxDist;
+            }
+
+            if (shape.type === "line") {
+                return !(shape.startX >= eraserX && shape.startX <= eraserX + eraserWidth &&
+                    shape.startY >= eraserY && shape.startY <= eraserY + eraserHeight);
+            }
+
+            if (shape.type === "triangle") {
+                return !(shape.startX >= eraserX && shape.startX <= eraserX + eraserWidth &&
+                    shape.startY >= eraserY && shape.startY <= eraserY + eraserHeight);
+            }
+
+            if (shape.type === "arrow") {
+                return !(shape.fromX >= eraserX && shape.fromX <= eraserX + eraserWidth &&
+                    shape.fromY >= eraserY && shape.fromY <= eraserY + eraserHeight);
+            }
+
+            if (shape.type === "pencil") {
+                return !shape.path.some(p => (
+                    p.x >= eraserX && p.x <= eraserX + eraserWidth &&
+                    p.y >= eraserY && p.y <= eraserY + eraserHeight
+                ));
+            }
+
+            return true;
+        });
+
+        this.clearCanvas();
+    }
+
 
     mouseDownHandler = (e: MouseEvent) => {
         this.clicked = true
@@ -225,6 +337,18 @@ export class Game {
 
         const selectedTool = this.selectedTool
         let shape: Shapes | null = null
+
+        if (this.selectedTool === "eraser") {
+            this.Erase(this.startX, this.startY, width, height);
+            return;
+        }
+        this.socket.send(JSON.stringify({
+            type: "erase",
+            area: { x: this.startX, y: this.startY, width, height },
+            roomId: this.roomId
+        }));
+
+
         if (selectedTool === "rect") {
             shape = {
                 type: "rect",
@@ -306,6 +430,20 @@ export class Game {
 
             this.ctx.strokeStyle = "white"
             const selectedTool = this.selectedTool
+
+            if (this.selectedTool === "eraser") {
+                const eraserWidth = 50;
+                const eraserHeight = 50;
+                const eraserX = e.clientX - eraserWidth / 2;
+                const eraserY = e.clientY - eraserHeight / 2;
+
+                this.clearCanvas();
+
+                this.ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+                this.ctx.fillRect(eraserX, eraserY, eraserWidth, eraserHeight);
+            }
+
+
             if (selectedTool === "rect") {
                 this.ctx.strokeRect(this.startX, this.startY, width, height);
             } else if (selectedTool === "circle") {
