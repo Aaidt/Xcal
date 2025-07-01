@@ -9,6 +9,7 @@ import { User, Plus, Trash2, SquarePlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { CreateRoomModal } from "@/components/CreateRoomModal";
 import { DeleteRoomModal } from "@/components/DeleteRoomModal";
+import { JoinRoomModal } from "@/components/JoinRoomModal";
 
 interface Room {
   id: number;
@@ -30,6 +31,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState<boolean>(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false)
   const [refresh, setRefresh] = useState<boolean>(false)
+  const [joinModalOpen, setJoinModalOpen] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -96,6 +98,7 @@ export default function Dashboard() {
   return (
     <div className="p-15 min-h-screen max-w-screen mx-auto bg-black/95 text-white">
       <CreateRoomModal open={modalOpen} setOpen={setModalOpen} />
+
       <DeleteRoomModal open={deleteModalOpen} setOpen={setDeleteModalOpen} 
         onDelete={async () => {
           try{
@@ -114,6 +117,9 @@ export default function Dashboard() {
         }
         }
         />
+
+        <JoinRoomModal open={joinModalOpen} setOpen={setJoinModalOpen} />
+
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -166,13 +172,13 @@ export default function Dashboard() {
               </h2>
               <div className="flex gap-2">
                 <button 
-                  onClick={() => setModalOpen(true)}
+                  onClick={() => setJoinModalOpen(true)}
                   className="bg-white hover:bg-white/80 cursor-pointer duration-200 transition-all text-black rounded-md px-4 py-2
                   flex mb-4 gap-1 items-center text-sm">
                   <SquarePlus className="size-4" /> Join room
                 </button>
 
-                
+
                 <button 
                   onClick={() => setModalOpen(true)}
                   className="bg-white hover:bg-white/80 cursor-pointer duration-200 transition-all text-black rounded-md px-3 py-2
