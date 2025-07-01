@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import RoomCard from "@/components/RoomCard";
 import { motion } from "framer-motion";
-import { User } from "lucide-react";
+import { User, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface Room {
@@ -20,6 +20,7 @@ export default function Dashboard() {
   const [adminRooms, setAdminRooms] = useState<Room[]>([]);
   const [visitedRooms, setVisitedRooms] = useState<Room[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [name, setName] = useState<string>("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -93,7 +94,7 @@ export default function Dashboard() {
             </p>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="hover:bg-white/5 duration-200 
+              className="hover:bg-white/5 duration-200 bg-white/10 
                       transition-all rounded-full p-2 cursor-pointer"
             >
               <User />
@@ -119,15 +120,21 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="mb-8 p-5">
-          <h2
-            onClick={() => {
-              router.push("/");
-            }}
-            className="cursor-pointer text-xl font-semibold mb-4"
-          >
-            Rooms you are the admin of:
-          </h2>
+        <div className="mb-8 p-5 mt-8">
+          <div className="flex justify-between ">
+            <h2
+              onClick={() => { router.push("/") }}
+              className="cursor-pointer text-xl font-semibold mb-4"
+            >
+              Rooms you are the admin of:
+            </h2>
+            <button 
+              onClick={() => setModalOpen(true)}
+              className="bg-white hover:bg-white/80 cursor-pointer duration-200 transition-all text-black rounded-md px-4 py-2
+              flex mb-4 gap-1 items-center text-sm">
+              <Plus className="size-4" /> Create room
+            </button>
+          </div>
           {adminRooms.length === 0 ? (
             <p className="text-gray-500">You are not admin of any rooms.</p>
           ) : (

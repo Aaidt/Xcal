@@ -29,9 +29,9 @@ authRouter.post("/signup", async function (req: Request, res: Response) {
 
         const token = jwt.sign({
             userId: user.id
-        }, JWT_SECRET);
+        }, JWT_SECRET, { expiresIn: "1h" });
 
-        res.status(201).json({ 
+        res.status(201).json({
             message: "Signed up successfully!!!",
             token: token
         })
@@ -72,16 +72,16 @@ authRouter.post("/signin", async function (req: Request, res: Response) {
         if (!JWT_SECRET) {
             console.log("No JWT_SECRET provided.")
             res.status(403).json({ message: "No JWT_SECRET provided." })
-            return 
+            return
         }
         const token = jwt.sign({
             userId: foundUser?.id
         }, JWT_SECRET)
 
-        res.status(200).json({ 
+        res.status(200).json({
             token: token,
             message: "Successfully logged in!!!"
-         })
+        })
 
     } catch (e) {
         console.log("Incorrect credentials provided.")
@@ -92,10 +92,10 @@ authRouter.post("/signin", async function (req: Request, res: Response) {
 
 })
 
-authRouter.get("/me", Middleware,  async function (req: Request, res: Response){
+authRouter.get("/me", Middleware, async function (req: Request, res: Response) {
     const userId = req.userId
 
-    try{
+    try {
         const user = await prismaClient.user.findUnique({
             where: {
                 id: userId
@@ -105,19 +105,19 @@ authRouter.get("/me", Middleware,  async function (req: Request, res: Response){
                 name: true,
                 photo: true
             }
-    });
+        });
 
-    if(!user){
-        console.log("No user found!!!")
-        res.status(404).json({ message: "No user found!!!" })
-        return
-    }
+        if (!user) {
+            console.log("No user found!!!")
+            res.status(404).json({ message: "No user found!!!" })
+            return
+        }
 
-    res.status(200).json({ user })
+        res.status(200).json({ user })
 
-    }catch(err){
+    } catch (err) {
         console.log('Server error')
-        res.status(500).json({ 
+        res.status(500).json({
             message: "server error"
         })
     }

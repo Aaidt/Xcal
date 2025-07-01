@@ -21,7 +21,7 @@ export default function RoomCard({ room }: RoomCardProps) {
         transition={{ duration: 0.8 }}>
     <div 
         onClick={() => router.push(`/canvas/${room.slug}`)}
-        className="border border-white/30 p-4 rounded-md hover:bg-white/5 duration-200 shadow hover:shadow-lg transition cursor-pointer"
+        className="border border-white/10 bg-white/5 p-4 rounded-md hover:bg-white/10 duration-200 shadow hover:shadow-lg transition cursor-pointer"
     >
       <h3 className="text-lg font-medium">{room.slug}</h3>
       <p className="text-sm text-gray-500">Created: {new Date(room.created_at).toLocaleDateString()}</p>
