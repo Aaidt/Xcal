@@ -135,6 +135,57 @@ roomRouter.get("/visited", async function (req: Request, res: Response) {
     }
 })
 
+roomRouter.delete('/delete/single/:roomId', async function (req: Request, res: Response){
+    const roomId = Number(req.params.roomId)
+
+    if(isNaN(roomId)){
+        res.status(400).json({
+            message: "Invalid roomId."
+        })
+        return 
+    }
+
+    try{
+        await prismaClient.room.delete({
+            where: {
+                id: roomId
+            }
+        })
+        res.status(200).json({
+            message: "Room was successfully deleted."
+        })
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json({
+            message: "Server error."
+        })
+    }
+})
+
+
+roomRouter.delete('/multiple', async function (req: Request, res: Response){
+    const userId = req.userId
+
+    try{
+        await prismaClient.room.deleteMany({
+            where: {
+                adminId: userId
+            }
+        })
+        res.status(200).json({
+            message: "Room was successfully deleted."
+        })
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json({
+            message: "Server error."
+        })
+    }
+})
+
+
 roomRouter.get("/:slug", async function (req: Request, res: Response) {
     const slug = req.params.slug;
 
