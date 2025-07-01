@@ -71,7 +71,7 @@ export function CreateRoomModal({
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3, ease: 'easeOut' }}
-        className="bg-zinc-900 rounded-2xl shadow-xl w-full max-w-md p-6 text-white"
+        className="bg-zinc-900 rounded-xl shadow-xl w-full max-w-md p-6 text-white"
       >
         <h2 className="text-center text-2xl font-bold mb-4">Create a Room</h2>
 

@@ -45,7 +45,7 @@ export function JoinRoomModal({
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="bg-zinc-900 rounded-2xl shadow-xl w-full max-w-md p-8 text-white "
+            className="bg-zinc-900 rounded-lg shadow-xl w-full max-w-md p-8 text-white "
         >
             <div className="font-bold text-3xl pb-1  flex justify-center">
               Join Room
@@ -65,7 +65,7 @@ export function JoinRoomModal({
               <button
                 disabled={loading}
                 onClick={handleJoin}
-                className="rounded-md font-bold px-4 py-2 bg-green-500 hover:bg-green-600 text-white duration-200 transition-all"
+                className="rounded-md font-bold px-4 py-2 text-sm bg-green-500 hover:bg-green-600 text-white duration-200 transition-all"
               >
                 {loading ? "Joining..." : "Join"}
               </button>
