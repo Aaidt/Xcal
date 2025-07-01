@@ -4,9 +4,11 @@ import axios from "axios";
 import { toast } from 'react-toastify'
 import RoomCard from "@/components/RoomCard";
 import { motion } from "framer-motion";
-import { User, Plus } from "lucide-react";
+import { User, Plus, Trash2 } from "lucide-react";
+
 import { useRouter } from "next/navigation";
 import { CreateRoomModal } from "@/components/CreateRoomModal";
+import { DeleteRoomModal } from "@/components/DeleteRoomModal";
 
 interface Room {
   id: number;
@@ -26,6 +28,7 @@ export default function Dashboard() {
   const [name, setName] = useState<string>("");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState<boolean>(false)
+  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -92,6 +95,21 @@ export default function Dashboard() {
   return (
     <div className="p-15 min-h-screen max-w-screen mx-auto bg-black/95 text-white">
       <CreateRoomModal open={modalOpen} setOpen={setModalOpen} />
+      <DeleteRoomModal open={deleteModalOpen} setOpen={setDeleteModalOpen} 
+        onDelete={async () => {
+          try{
+            const response = await axios.delete(`${BACKEND_URL}/api/room/delete/multiple`, {
+              headers: { 
+                Authorization: localStorage.getItem('authorization') 
+              },
+            });
+            toast.success(response.data.message)
+          }catch(err){
+            console.log(err)
+            toast.error("Error while deleting room")            
+          }}
+        }
+        />
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -107,7 +125,7 @@ export default function Dashboard() {
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="hover:bg-white/5 duration-200 bg-white/10 
-                      transition-all rounded-full p-2 cursor-pointer"
+                transition-all rounded-full p-2 cursor-pointer"
             >
               <User />
             </button>
@@ -119,7 +137,7 @@ export default function Dashboard() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.2 }}
                 className="absolute translate-y-10 right-0 mt-2 w-45 bg-red-900 text-white hover:bg-red-800 
-                        font-medium shadow-md rounded-md z-10"
+                  font-medium shadow-md rounded-md z-10"
               >
                 <button
                   onClick={handleLogout}
@@ -142,12 +160,21 @@ export default function Dashboard() {
               >
                 Rooms you are the admin of:
               </h2>
-              <button 
-                onClick={() => setModalOpen(true)}
-                className="bg-white hover:bg-white/80 cursor-pointer duration-200 transition-all text-black rounded-md px-4 py-2
-                flex mb-4 gap-1 items-center text-sm">
-                <Plus className="size-4" /> Create room
-              </button>
+              <div className="mx-2">
+                <button 
+                  onClick={() => setModalOpen(true)}
+                  className="bg-white hover:bg-white/80 cursor-pointer duration-200 transition-all text-black rounded-md px-4 py-2
+                  flex mb-4 gap-1 items-center text-sm">
+                  <Plus className="size-4" /> Create room
+                </button>
+
+                <button 
+                  onClick={() => setDeleteModalOpen(true)}
+                  className="bg-red-800 hover:bg-red-800/80 cursor-pointer duration-200 transition-all text-black rounded-md px-4 py-2
+                  flex mb-4 gap-1 items-center text-sm">
+                  <Trash2 className="size-4" /> Delete all
+                </button>
+              </div>
             </div>
               {adminRooms.length === 0 ? (
                 <p className="text-gray-500">You are not admin of any rooms.</p>

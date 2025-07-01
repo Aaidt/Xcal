@@ -164,7 +164,7 @@ roomRouter.delete('/delete/single/:roomId', async function (req: Request, res: R
 })
 
 
-roomRouter.delete('/multiple', async function (req: Request, res: Response){
+roomRouter.delete('/delete/multiple', async function (req: Request, res: Response){
     const userId = req.userId
 
     try{

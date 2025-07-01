@@ -31,10 +31,17 @@ export default function RoomCard({ room, visiting }: RoomCardProps) {
         transition={{ duration: 0.8 }}>
       <DeleteRoomModal open={deleteModalOpen} setOpen={setDeleteModalOpen} 
         onDelete={async () => {
-          await axios.delete(`${BACKEND_URL}/api/room/${room.id}`, {
-            headers: { Authorization: localStorage.getItem('authorization') },
-          });
-          toast.success("Room deleted");
+          try{
+            const response = await axios.delete(`${BACKEND_URL}/api/room/delete/single${room.id}`, {
+              headers: { 
+                Authorization: localStorage.getItem('authorization') 
+              },
+            });
+            toast.success(response.data.message)
+          }catch(err){
+            console.log(err)
+            toast.error("Error while deleting room")            
+          }
         }} />
     <div 
       className="border border-white/10 bg-white/5 p-4 rounded-md hover:bg-white/10 duration-200 shadow hover:shadow-lg transition cursor-pointer"
