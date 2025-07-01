@@ -1,10 +1,12 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import { toast } from 'react-toastify'
 import RoomCard from "@/components/RoomCard";
 import { motion } from "framer-motion";
 import { User, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { CreateRoomModal } from "@/components/CreateRoomModal";
 
 interface Room {
   id: number;
@@ -23,6 +25,7 @@ export default function Dashboard() {
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [name, setName] = useState<string>("");
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -46,40 +49,49 @@ export default function Dashboard() {
     const fetchData = async () => {
       const token = localStorage.getItem("Authorization");
 
-      const res = await axios.get(`${BACKEND_URL}/api/auth/me`, {
-        headers: {
-          Authorization: token,
-        },
-      });
+      try{
+        setLoading(true)
 
-      setName(res.data?.user.name);
-
-      const admin = await axios.get<{ adminRooms: Room[] }>(
-        `${BACKEND_URL}/api/room/admin`,
-        {
+        const res = await axios.get(`${BACKEND_URL}/api/auth/me`, {
           headers: {
             Authorization: token,
           },
-        }
-      );
-      setAdminRooms(admin.data.adminRooms || []);
-
-      const visited = await axios.get<{ visitedRooms: Room[] }>(
-        `${BACKEND_URL}/api/room/visited`,
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-      setVisitedRooms(visited.data.visitedRooms || []);
-    };
-
+        });
+  
+        setName(res.data?.user.name);
+  
+        const admin = await axios.get<{ adminRooms: Room[] }>(
+          `${BACKEND_URL}/api/room/admin`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+        setAdminRooms(admin.data.adminRooms || []);
+  
+        const visited = await axios.get<{ visitedRooms: Room[] }>(
+          `${BACKEND_URL}/api/room/visited`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+        setVisitedRooms(visited.data.visitedRooms || []);
+      }catch(err){
+        console.log(err);
+        toast.error('Coul not fetch your rooms')
+      } finally{
+        setLoading(false)
+      }
+    }
     fetchData();
   }, []);
 
   return (
     <div className="p-15 min-h-screen max-w-screen mx-auto bg-black/95 text-white">
+      <CreateRoomModal open={modalOpen} setOpen={setModalOpen} />
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -120,45 +132,49 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="mb-8 p-5 mt-8">
-          <div className="flex justify-between ">
-            <h2
-              onClick={() => { router.push("/") }}
-              className="cursor-pointer text-xl font-semibold mb-4"
-            >
-              Rooms you are the admin of:
-            </h2>
-            <button 
-              onClick={() => setModalOpen(true)}
-              className="bg-white hover:bg-white/80 cursor-pointer duration-200 transition-all text-black rounded-md px-4 py-2
-              flex mb-4 gap-1 items-center text-sm">
-              <Plus className="size-4" /> Create room
-            </button>
+          {loading ? <p className=" flex justify-center items-center mt-50 text-lg text-gray-500">Loading data...</p> :
+          <div>
+            <div className="mb-8 p-5 mt-8">
+            <div className="flex justify-between ">
+              <h2
+                onClick={() => { router.push("/") }}
+                className="cursor-pointer text-xl font-semibold mb-4"
+              >
+                Rooms you are the admin of:
+              </h2>
+              <button 
+                onClick={() => setModalOpen(true)}
+                className="bg-white hover:bg-white/80 cursor-pointer duration-200 transition-all text-black rounded-md px-4 py-2
+                flex mb-4 gap-1 items-center text-sm">
+                <Plus className="size-4" /> Create room
+              </button>
+            </div>
+              {adminRooms.length === 0 ? (
+                <p className="text-gray-500">You are not admin of any rooms.</p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {adminRooms.map((room) => (
+                    <RoomCard key={room.id} room={room} />
+                  ))}
+                </div>
+              )}
           </div>
-          {adminRooms.length === 0 ? (
-            <p className="text-gray-500">You are not admin of any rooms.</p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {adminRooms.map((room) => (
-                <RoomCard key={room.id} room={room} />
-              ))}
-            </div>
-          )}
-        </div>
 
-        <div className="p-5">
-          <h2 className="text-xl font-semibold mb-4">Rooms you have visited:</h2>
-          {visitedRooms.length === 0 ? (
-            <p className="text-gray-500">You havent visited any rooms yet.</p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {visitedRooms.map((room) => (
-                <RoomCard key={room.id} room={room} />
-              ))}
-            </div>
-          )}
+          <div className="p-5">
+            <h2 className="text-xl font-semibold mb-4">Rooms you have visited:</h2>
+              {visitedRooms.length === 0 ? (
+                <p className="text-gray-500">You havent visited any rooms yet.</p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {visitedRooms.map((room) => (
+                    <RoomCard key={room.id} room={room} />
+                  ))}
+                </div>
+              )}
+          </div>
         </div>
+        }
       </motion.div>
     </div>
-  );
+    );
 }
