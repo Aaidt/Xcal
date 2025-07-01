@@ -15,10 +15,11 @@ interface RoomCardProps {
     slug: string
     created_at: string
   },
-  visiting: boolean
+  visiting: boolean,
+  onRefresh?: () => void | undefined
 }
 
-export default function RoomCard({ room, visiting }: RoomCardProps) {
+export default function RoomCard({ room, visiting, onRefresh }: RoomCardProps) {
     const router = useRouter()
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -32,12 +33,13 @@ export default function RoomCard({ room, visiting }: RoomCardProps) {
       <DeleteRoomModal open={deleteModalOpen} setOpen={setDeleteModalOpen} 
         onDelete={async () => {
           try{
-            const response = await axios.delete(`${BACKEND_URL}/api/room/delete/single${room.id}`, {
+            const response = await axios.delete(`${BACKEND_URL}/api/room/delete/single/${room.id}`, {
               headers: { 
-                Authorization: localStorage.getItem('authorization') 
+                Authorization: localStorage.getItem('Authorization') 
               },
             });
             toast.success(response.data.message)
+            onRefresh?.();
           }catch(err){
             console.log(err)
             toast.error("Error while deleting room")            

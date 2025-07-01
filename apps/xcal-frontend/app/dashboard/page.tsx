@@ -29,6 +29,7 @@ export default function Dashboard() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState<boolean>(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false)
+  const [refresh, setRefresh] = useState<boolean>(false)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -90,7 +91,7 @@ export default function Dashboard() {
       }
     }
     fetchData();
-  }, []);
+  }, [refresh]);
 
   return (
     <div className="p-15 min-h-screen max-w-screen mx-auto bg-black/95 text-white">
@@ -100,14 +101,17 @@ export default function Dashboard() {
           try{
             const response = await axios.delete(`${BACKEND_URL}/api/room/delete/multiple`, {
               headers: { 
-                Authorization: localStorage.getItem('authorization') 
+                Authorization: localStorage.getItem('Authorization') 
               },
             });
             toast.success(response.data.message)
           }catch(err){
             console.log(err)
             toast.error("Error while deleting room")            
-          }}
+          }finally{
+            setRefresh(prev => !prev)
+          }
+        }
         }
         />
       <motion.div
@@ -160,17 +164,17 @@ export default function Dashboard() {
               >
                 Rooms you are the admin of:
               </h2>
-              <div className="mx-2">
+              <div className="flex gap-2">
                 <button 
                   onClick={() => setModalOpen(true)}
-                  className="bg-white hover:bg-white/80 cursor-pointer duration-200 transition-all text-black rounded-md px-4 py-2
+                  className="bg-white hover:bg-white/80 cursor-pointer duration-200 transition-all text-black rounded-md px-3 py-2
                   flex mb-4 gap-1 items-center text-sm">
                   <Plus className="size-4" /> Create room
                 </button>
 
                 <button 
                   onClick={() => setDeleteModalOpen(true)}
-                  className="bg-red-800 hover:bg-red-800/80 cursor-pointer duration-200 transition-all text-black rounded-md px-4 py-2
+                  className="bg-red-800 hover:bg-red-800/80 cursor-pointer duration-200 transition-all text-white rounded-md px-4 py-2
                   flex mb-4 gap-1 items-center text-sm">
                   <Trash2 className="size-4" /> Delete all
                 </button>
@@ -181,7 +185,9 @@ export default function Dashboard() {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   {adminRooms.map((room) => (
-                    <RoomCard key={room.id} room={room} visiting={false} />
+                    <RoomCard key={room.id} room={room} visiting={false} onRefresh={() => {
+                      setRefresh(prev => !prev)
+                    }} />
                   ))}
                 </div>
               )}
