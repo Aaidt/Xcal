@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from 'react-toastify'
 import RoomCard from "@/components/RoomCard";
 import { motion } from "framer-motion";
-import { User, Plus, Trash2 } from "lucide-react";
+import { User, Plus, Trash2, SquarePlus } from "lucide-react";
 
 import { useRouter } from "next/navigation";
 import { CreateRoomModal } from "@/components/CreateRoomModal";
@@ -165,6 +165,14 @@ export default function Dashboard() {
                 Rooms you are the admin of:
               </h2>
               <div className="flex gap-2">
+                <button 
+                  onClick={() => setModalOpen(true)}
+                  className="bg-white hover:bg-white/80 cursor-pointer duration-200 transition-all text-black rounded-md px-4 py-2
+                  flex mb-4 gap-1 items-center text-sm">
+                  <SquarePlus className="size-4" /> Join room
+                </button>
+
+                
                 <button 
                   onClick={() => setModalOpen(true)}
                   className="bg-white hover:bg-white/80 cursor-pointer duration-200 transition-all text-black rounded-md px-3 py-2
