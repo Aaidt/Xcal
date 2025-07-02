@@ -174,7 +174,7 @@ export default function Dashboard() {
                 <button 
                   onClick={() => setJoinModalOpen(true)}
                   className="bg-white hover:bg-white/80 cursor-pointer duration-200 transition-all text-black rounded-md px-4 py-2
-                  flex mb-4 gap-1 items-center text-sm">
+                  flex mb-4 gap-1 font-medium items-center text-sm">
                   <SquarePlus className="size-4" /> Join room
                 </button>
 
@@ -182,14 +182,14 @@ export default function Dashboard() {
                 <button 
                   onClick={() => setModalOpen(true)}
                   className="bg-white hover:bg-white/80 cursor-pointer duration-200 transition-all text-black rounded-md px-3 py-2
-                  flex mb-4 gap-1 items-center text-sm">
+                  flex mb-4 gap-1 font-medium items-center text-sm">
                   <Plus className="size-4" /> Create room
                 </button>
 
                 <button 
                   onClick={() => setDeleteModalOpen(true)}
                   className="bg-red-800 hover:bg-red-800/80 cursor-pointer duration-200 transition-all text-white rounded-md px-4 py-2
-                  flex mb-4 gap-1 items-center text-sm">
+                  flex mb-4 gap-1 font-medium items-center text-sm">
                   <Trash2 className="size-4" /> Delete all
                 </button>
               </div>

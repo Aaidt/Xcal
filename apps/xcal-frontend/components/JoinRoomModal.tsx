@@ -22,7 +22,6 @@ export function JoinRoomModal({
 
     setLoading(true)
     try {
-      // Assuming full URL might be pasted, extract slug
       const extractedSlug = slug.includes("/") ? slug.split("/").pop() : slug
       router.push(`/canvas/${extractedSlug}`)
     } catch (err) {

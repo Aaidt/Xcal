@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import { useRouter } from 'next/navigation'
-import { Trash2, Share } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { DeleteRoomModal } from "@/components/DeleteRoomModal";
 import axios from 'axios'
 import { useState } from "react";
@@ -60,10 +60,10 @@ export default function RoomCard({ room, visiting, onRefresh }: RoomCardProps) {
 
         {visiting ? null :<div className="flex gap-4"> 
 
-          <Share className="size-5 cursor-pointer" />
+          {/* <Share className="size-5 cursor-pointer" /> */}
 
           <Trash2 
-            className="size-5 cursor-pointer  hover:text-red-700 text-red-900"
+            className="size-5 cursor-pointer  hover:text-red-700 text-red-800"
             onClick={(e) => {
               e.stopPropagation();
               setDeleteModalOpen(true)
