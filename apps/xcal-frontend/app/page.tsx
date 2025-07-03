@@ -159,9 +159,11 @@ export default function Home() {
           </div>
 
           <div className="pt-5 flex ">
-            <button className="bg-white flex items-center text-black font-medium text-md rounded-md px-3 py-2 flex cursor-pointer hover:bg-white/80 transition-all duration-200">
-              Start drawing now <ArrowRight className="pl-2" />
-            </button>
+            <Link href="/signup">
+              <button className="bg-white flex items-center text-black font-medium text-md rounded-md px-3 py-2 flex cursor-pointer hover:bg-white/80 transition-all duration-200">
+                Start drawing now <ArrowRight className="pl-2" />
+              </button>
+            </Link>
             <button
               className="ml-6 bg-black font-medium border flex items-center border-white/30 transition-all duration-300 hover:bg-white/10 px-3 py-2 rounded-md cursor-pointer">
               Watch demo

@@ -261,12 +261,12 @@ export class Game {
                 this.ctx.lineWidth = 1;
             }
         })
-        this.existingShapes.map(shape => {
-            if (shape.type === "eraser") {
-                this.ctx.fillStyle = "#121212";
-                this.ctx.fillRect(shape.x, shape.y, shape.width, shape.height);
-            }
-        })
+        // this.existingShapes.map(shape => {
+        //     if (shape.type === "eraser") {
+        //         this.ctx.fillStyle = "#121212";
+        //         this.ctx.fillRect(shape.x, shape.y, shape.width, shape.height);
+        //     }
+        // })
     }
 
     Erase(eraserX: number, eraserY: number, eraserWidth: number, eraserHeight: number) {
