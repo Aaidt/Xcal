@@ -26,6 +26,10 @@ authRouter.post("/signup", async function (req: Request, res: Response) {
                 password: hashedPassword
             }
         })
+        if(!user){
+            console.log("User not created.")
+            res.status(402).json({ message: "Could not create the user." })
+        }
 
         const token = jwt.sign({
             userId: user.id
@@ -35,10 +39,10 @@ authRouter.post("/signup", async function (req: Request, res: Response) {
             message: "Signed up successfully!!!",
             token: token
         })
-    } catch (e) {
-        console.log("Username already exists.")
+    } catch (err) {
+        console.log("Server error. Could not sign up." + err)
         res.status(403).json({
-            message: "Username already exists."
+            message: "Server error. Could not sign up."
         })
     }
 
@@ -83,10 +87,10 @@ authRouter.post("/signin", async function (req: Request, res: Response) {
             message: "Successfully logged in!!!"
         })
 
-    } catch (e) {
-        console.log("Incorrect credentials provided.")
+    } catch (err) {
+        console.log("Server error. Could not login.." + err)
         res.status(403).json({
-            message: "Incorrect credentials provided."
+            message: "Server error. Could not login."
         })
     }
 

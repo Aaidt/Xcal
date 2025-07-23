@@ -24,24 +24,6 @@ export default function Home() {
     }
   ]
 
-  const testimonial = [
-    {
-      quote: "Excal has transformed how our design team collaborates. The real-time features save us hours of back and forth.",
-      author: "Sarah Johnson",
-      role: "Product Designer, Acme Inc."
-    },
-    {
-      quote: "I use Excal daily for wireframing and brainstorming. The interface is so intuitive that my non-designer colleagues can jump right in.",
-      author: "Michael Chen",
-      role: "UX Lead, TechStart"
-    },
-    {
-      quote: "As a remote team, we needed a tool that makes visual collaboration easy. Excal exceeded our expectations on all fronts.",
-      author: "Emma Rodriguez",
-      role: "Project manager, RemoteWorks"
-    }
-  ]
-
   const prices = [
     {
       name: "Free",
@@ -87,21 +69,6 @@ export default function Home() {
     }
   ]
 
-  // const footer = [
-  //   {
-  //     title: "Product",
-  //     links: ["Features", "Pricing", "Integrations"],
-  //   },
-  //   {
-  //     title: "Resources",
-  //     links: ["Blog", "Guides", "Help Center"],
-  //   },
-  //   {
-  //     title: "Company",
-  //     links: ["About", "Careers", "Contact", "Privacy"],
-  //   }
-  // ]
-
   return (
     <div className="bg-black text-white max-w-screen min-h-screen overflow-hidden">
 
@@ -109,9 +76,9 @@ export default function Home() {
         initial={{ opacity: 0, y: -40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6 }} className="fixed z-50 top-0 left-0 border-y border-white/20 bg-black backdrop-filter backdrop-blur-md bg-transparent w-screen h-20">
+        transition={{ duration: 0.6 }} className="fixed z-50 top-0 left-0 border-y border-white/20 bg-black backdrop-filter backdrop-blur-md bg-transparent w-screen h-22">
         <div
-          className="flex justify-between items-center h-full px-6">
+          className="flex justify-between items-center h-full p-8">
 
           <div className="text-4xl font-bold flex items-center cursor-pointer">Xcal</div>
 
@@ -119,14 +86,11 @@ export default function Home() {
             <Link href="#features">
               <div className="hover:underline hover:underline-offset-3 font-semibold transition-all duration-300 hover:-translate-y-1 cursor-pointer">Features</div>
             </Link>
-            <Link href="#testimonials">
-              <div className="hover:underline hover:underline-offset-3 font-semibold transition-all duration-300 hover:-translate-y-1 cursor-pointer">Testimonials</div>
-            </Link>
             <Link href="#pricing">
               <div className="hover:underline hover:underline-offset-3 font-semibold transition-all duration-300 hover:-translate-y-1 cursor-pointer">Pricing</div>
             </Link>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 mr-4">
               <Link href="/signup">
                 <button className="bg-white font-semibold text-black transition-all duration-300 hover:bg-white/80 px-3 py-2 rounded-md cursor-pointer">Signup</button>
               </Link>
@@ -213,7 +177,7 @@ export default function Home() {
       </div>
 
 
-      <div id="testimonials" className="pt-15 pb-20 border-b border-white/30 ">
+      {/* <div id="testimonials" className="pt-15 pb-20 border-b border-white/30 ">
         <h1 className="flex justify-center mr-25 text-5xl font-bold pb-5">Loved by teams worldwide</h1>
         <p className="flex justify-center mr-25 text-xl text-gray-400 ">See what our users say about their experience with Excal.</p>
 
@@ -246,7 +210,7 @@ export default function Home() {
           ))}
         </div>
 
-      </div>
+      </div> */}
 
 
       <div id="pricing" className="pt-15 pb-20 border-b border-white/30">
@@ -264,8 +228,8 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: index * 0.2 }}
               className={`bg-black text-white p-8 rounded-lg flex flex-col w-78
-                  ${tier.popular ? "shadow-md shadow-white/60 border-1 border-white/70 hover:shadow-lg transition-all duration-300"
-                  : "hover:shadow-white/80 border border-white/30 duration-300 transition-all hover:shadow-md duration-300"}`}
+                  ${tier.popular ? "shadow-md shadow-white/30 border-1 border-white/70 hover:shadow-lg transition-all duration-300"
+                  : "hover:shadow-white/40 border border-white/30 duration-300 transition-all hover:shadow-md duration-300"}`}
             >
               {tier.popular && (
                 <div className="rounded-full w-fit text-sm mb-4 px-3 py-1 bg-white text-black font-medium">
@@ -314,8 +278,8 @@ export default function Home() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }} className="flex jusify-center items-center pl-15 gap-8">
-          <button className="cursor-pointer bg-black/80 text-white rounded-md px-4 py-2 hover:bg-black/90 duration-300 transition-all flex">
-            Start for free <ChevronRight />
+          <button className="cursor-pointer bg-black/90 text-white rounded-md px-4 py-2 hover:bg-black/80 duration-300 transition-all flex items-center ">
+            Start for free <ChevronRight size="20" className="ml-1" />
           </button>
           <button className="bg-white cursor-pointer hover:bg-black/20 text-black rounded-md px-4 py-2 border border-black/30 duration-300 transition-all">See live demo</button>
         </motion.div>

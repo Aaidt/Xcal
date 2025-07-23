@@ -13,7 +13,7 @@ model User {
   photo     String?
   username  String    @unique
   password  String
-  createdAt DateTime  @default(now())
+  createdAt DateTime  @default(now()) 
   messages  Message[]
   adminOf   Room[]    @relation("AdminUser")
   shapes    Shape[]

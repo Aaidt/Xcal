@@ -13,6 +13,9 @@ interface AuthResponse {
 
 export function AuthPage({ isSignin }: { isSignin: boolean }) {
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+    if(!BACKEND_URL){
+        throw new Error("Backend url not provided")
+    }
 
     const router = useRouter();
 
@@ -45,6 +48,7 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
                         password
                     }
             )
+            console.log(response);
             toast.success(response?.data.message || "Success")
             routeToPage(response.data)
         }
